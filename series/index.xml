@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Series on bobbys-dev blog</title>
+    <link>https://bobbys-dev.github.io/series/</link>
+    <description>Recent content in Series on bobbys-dev blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 05 Oct 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://bobbys-dev.github.io/series/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>about me</title>
+      <link>https://bobbys-dev.github.io/series/about-me/</link>
+      <pubDate>Mon, 05 Oct 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://bobbys-dev.github.io/series/about-me/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Themes Guide</title>
+      <link>https://bobbys-dev.github.io/series/themes-guide/</link>
+      <pubDate>Mon, 11 Mar 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://bobbys-dev.github.io/series/themes-guide/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>
