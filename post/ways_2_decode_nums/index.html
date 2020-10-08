@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en-us"><meta charset="utf-8" />
+
+  <title>Hello World - bobbys-dev blog</title>
+
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="https://bobbys-dev.github.io/css/latex.css" />
+<link rel="stylesheet" href="https://bobbys-dev.github.io/css/main.css" />
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<meta name="generator" content="Hugo 0.75.1" /><body>
+
+
+
+
+
+
+<header>
+  <nav class="navbar">
+  <div class="nav">
+    
+
+    <ul class="nav-links">
+      
+    </ul>
+  </div>
+</nav>
+  <div class="intro-header">
+    <div class="container">
+      <div class="post-heading">
+        
+          <h1>Hello World</h1>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+<div id="content">
+  <div class="container" role="main">
+    <article class="article" class="blog-post">
+      <div class="postmeta">
+        <span class="meta-post">
+  <i class="fa fa-calendar-alt"></i>Oct 8, 2020
+  
+    <br><i class="fa fa-folder-open"></i>
+    
+      <a href="https://bobbys-dev.github.io//categories/coding/">coding</a>&nbsp;
+    
+  
+</span>
+      </div>
+      <br>
+      
+    <h2 id="scenario">Scenario</h2>
+<p>Determine number of possible ways to decode a given Caeser cipher encoded message that  maps:<br>
+&lsquo;A&rsquo; -&gt; &lsquo;1&rsquo;<br>
+&lsquo;B&rsquo; -&gt; &lsquo;2&rsquo;<br>
+&hellip;<br>
+&lsquo;Z&rsquo; -&gt; &lsquo;26&rsquo;<br>
+The input is a string of numbers and the output is a number counting all the possible ways a message could be decoded.</p>
+<p>For message = &ldquo;122&rdquo;, there are 3 possible ways to decode the message:<br>
+&ldquo;ABB&rdquo; (1 2 2)<br>
+&ldquo;LB&rdquo; (12 2)<br>
+&ldquo;AV&rdquo; (1 22)</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> random
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">generate_message</span>():
+    <span style="color:#e6db74">&#34;&#34;&#34;
+</span><span style="color:#e6db74">    generates message and cipher strings
+</span><span style="color:#e6db74">    &#34;&#34;&#34;</span>
+    ALPHA <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;_ABCDEFGHIJKLMNOPQRSTUVWXYZ&#34;</span>
+    MAX_LENGTH <span style="color:#f92672">=</span> random<span style="color:#f92672">.</span>randint(<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">100</span>)
+    message <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span>
+    cipher <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span>
+    <span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> range(MAX_LENGTH):
+        i <span style="color:#f92672">=</span> random<span style="color:#f92672">.</span>randint(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">26</span>)
+        message <span style="color:#f92672">+=</span> ALPHA[i]
+        cipher <span style="color:#f92672">+=</span> str(i)
+    <span style="color:#66d9ef">return</span> message, cipher
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">random<span style="color:#f92672">.</span>seed(<span style="color:#ae81ff">113</span>)
+generate_message()
+</code></pre></div><pre><code>('UZX', '212624')
+</code></pre>
+<h3 id="observation">Observation</h3>
+<p>For a long string of 1&rsquo;s of length n, the total number of letter combinations ends up being the number of ways for n-1 plus number of ways for n-2.</p>
+<p>For example, take cases for n=2, n=3, and n=4. For n=2, &lsquo;11&rsquo; decodes to one of (&lsquo;A&rsquo;,&lsquo;A&rsquo;) or (&lsquo;K&rsquo;), making 2 possible decodings. For n=3, &lsquo;111&rsquo; could be a set of 3 messages: (&lsquo;A&rsquo;,&lsquo;A&rsquo;,&lsquo;A&rsquo;) (&lsquo;A&rsquo;,&lsquo;K&rsquo;), or (&lsquo;K&rsquo;,&lsquo;A&rsquo;). If you write out the possible decoding set for n=4 &lsquo;1111&rsquo;, you&rsquo;ll have written 5 possible messages, which, importantly, is 2+3 (the addition of counts of previous two message lengths).</p>
+<p>With that in mind, we&rsquo;ll use memoization to precalculate validly consecutive values for future use.</p>
+<p>I&rsquo;ll only memoize 51 elements because the message is <strong>randomly and independently generated from equal probability distribution of letters</strong>, and there is a very low chance we&rsquo;ll have a very long string of letters that fit this kind of observation. Similarly, in the real world we&rsquo;ll most likely run into halting letter (see next observation).</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># caveat you could have test case with intentionally very long message</span>
+ways <span style="color:#f92672">=</span> [<span style="color:#ae81ff">1</span>]<span style="color:#f92672">*</span><span style="color:#ae81ff">51</span>
+<span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">2</span>,len(ways)):
+    ways[i] <span style="color:#f92672">=</span> ways[i<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>] <span style="color:#f92672">+</span> ways[i<span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>]
+</code></pre></div><p>So generally, ways[j] represents how many letter combinations are possible considering numbers [0:j-1], inclusive, of the message, but there are special numbers that signal a subset of all the possible letters.</p>
+<h3 id="observations">Observations</h3>
+<ul>
+<li>ways[0] = 1 because <em>a single number can only represent a single letter</em>, but also, it can&rsquo;t be letters [J:Z]</li>
+<li>ways[1] = 1 way if message[0] &gt; 2 because only [CDEFGHI] could be &gt; 2, so there are 2 letters; else (since message[0]&lt;=2), ways = 2 because it could be two letters where message[0] can only be [AB] and message[1] takes on a value of [1:9] corresponding to [A:I], assuming the message terminates at this position.</li>
+</ul>
+<p>Because there are numbers that indicate a specific subset of possible letters, I&rsquo;ll take a dynamic programming approach and consider whether to include the current number in the previous section of numbers, or whether there should be a section break. A section break means I&rsquo;ll have to multiply the possible ways of the last section with the possible ways of the next section. I&rsquo;ll break sections by considering classes of digits.</p>
+<p><strong>Classes of digits</strong> are characterized base on its value and the previous value. Assume x as a qualified number that is to be considered with the current section.</p>
+<ul>
+<li>00 disqualifies entire message</li>
+<li>x0 the number must end at zero, so don&rsquo;t include this zero in the section or the next, but calculate total ways and reset to 0</li>
+<li>1[3:9] can be included (+1) as a digit on its own unless the previous number is 2. Must also end here, so reset to 0 in this loop</li>
+<li>2[3:6] is can be included to length of previous section (+1) or be a number on its own. Must also end here, so reset to 0 in this loop</li>
+<li>2[7:9] this is not a value continuation, so don&rsquo;t include it in this section but treat it as reseting the next section to 1</li>
+<li>x[1:2] this can be included (+1) in the section up to this number, and it can be a number on its own. May continue onto next section, so don&rsquo;t reset section length</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">do_it</span>(message):
+    n <span style="color:#f92672">=</span> len(message)
+
+    <span style="color:#66d9ef">if</span> n <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+        <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>
+    <span style="color:#66d9ef">if</span> n <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span> :
+        <span style="color:#66d9ef">if</span> int(message[<span style="color:#ae81ff">0</span>]) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+            <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>
+        <span style="color:#66d9ef">else</span>:
+            <span style="color:#66d9ef">return</span> n
+
+    section_length <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
+    total_ways <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
+
+    <span style="color:#75715e"># Decide whether to include i in length (+1) or end it calc and reset</span>
+    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1</span>, n):
+        prev <span style="color:#f92672">=</span> int(message[i<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>])
+        curr <span style="color:#f92672">=</span> int(message[i])
+        <span style="color:#75715e">#previous value is a nonstarter going forward eg it would be 3x or higher, or 0x which is not a letter</span>
+        <span style="color:#66d9ef">if</span> prev <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">or</span> prev <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+            <span style="color:#66d9ef">if</span> curr <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+                <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>
+            total_ways <span style="color:#f92672">=</span> total_ways <span style="color:#f92672">*</span> ways[section_length]
+            section_length <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span> <span style="color:#75715e"># reset</span>
+            one_more <span style="color:#f92672">=</span> False
+        <span style="color:#75715e"># previous value is 2, so check self</span>
+        <span style="color:#75715e"># 20 25 26</span>
+        <span style="color:#75715e"># previous value is 1 so add prev value</span>
+        <span style="color:#66d9ef">elif</span> (prev <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">or</span> prev <span style="color:#f92672">==</span> <span style="color:#ae81ff">2</span>) <span style="color:#f92672">and</span> curr <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+            section_length <span style="color:#f92672">-=</span> <span style="color:#ae81ff">1</span>
+            total_ways <span style="color:#f92672">=</span> total_ways <span style="color:#f92672">*</span> ways[section_length]
+            section_length <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span> <span style="color:#75715e"># reset</span>
+            one_more <span style="color:#f92672">=</span> False
+        <span style="color:#66d9ef">elif</span> prev <span style="color:#f92672">==</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">and</span> curr <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">6</span>:  
+            section_length <span style="color:#f92672">+=</span><span style="color:#ae81ff">1</span>
+            one_more <span style="color:#f92672">=</span> True
+        <span style="color:#75715e"># 27 28 29 don&#39;t add this to section length and calc</span>
+        <span style="color:#66d9ef">elif</span> prev <span style="color:#f92672">==</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">and</span> curr <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">6</span>:
+            total_ways <span style="color:#f92672">=</span> total_ways <span style="color:#f92672">*</span> ways[section_length]
+            section_length <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span> <span style="color:#75715e"># reset</span>
+            one_more <span style="color:#f92672">=</span> False           
+        <span style="color:#66d9ef">else</span>:
+            section_length <span style="color:#f92672">+=</span><span style="color:#ae81ff">1</span>
+            one_more <span style="color:#f92672">=</span> True
+
+    <span style="color:#66d9ef">if</span> one_more:
+        <span style="color:#75715e"># do one final calculation since the last thing we did was add to section length (instead of calculating totals ways)</span>
+        total_ways <span style="color:#f92672">=</span> total_ways <span style="color:#f92672">*</span> ways[section_length]
+
+
+    <span style="color:#66d9ef">return</span> total_ways
+</code></pre></div><h2 id="lets-do-it">Let&rsquo;s do it!</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">random<span style="color:#f92672">.</span>seed(<span style="color:#ae81ff">1</span>)
+message, cipher <span style="color:#f92672">=</span> generate_message()
+<span style="color:#66d9ef">print</span>(f<span style="color:#e6db74">&#34;for a cipher text of {cipher}, we have {do_it(cipher)} possible message decodings&#34;</span>)
+</code></pre></div><pre><code>for a cipher text of 1926253941625151621132674161, we have 2560 possible message decodings
+</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">test_it</span>():
+    known <span style="color:#f92672">=</span> {
+        <span style="color:#e6db74">&#34;1&#34;</span>: <span style="color:#ae81ff">1</span>,
+        <span style="color:#e6db74">&#34;10122110&#34;</span>: <span style="color:#ae81ff">5</span>,
+        <span style="color:#e6db74">&#34;301&#34;</span>: <span style="color:#ae81ff">0</span>,
+    }
+    
+    <span style="color:#66d9ef">for</span> c, ans <span style="color:#f92672">in</span> known<span style="color:#f92672">.</span>items():
+        <span style="color:#66d9ef">assert</span>(do_it(c) <span style="color:#f92672">==</span> ans)
+        
+    <span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;Checks good!&#34;</span>)
+    
+test_it()
+</code></pre></div><pre><code>Checks good!
+</code></pre>
+<h3 id="visual-verification">Visual verification</h3>
+<p>Here is a message with small n so to visually check that the count is correct.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">random<span style="color:#f92672">.</span>seed(<span style="color:#ae81ff">113</span>)
+message, cipher <span style="color:#f92672">=</span> generate_message()
+<span style="color:#66d9ef">print</span>(f<span style="color:#e6db74">&#34;message is {message}&#34;</span>)
+<span style="color:#66d9ef">print</span>(f<span style="color:#e6db74">&#34;cipher is {cipher}&#34;</span>)
+</code></pre></div><pre><code>message is UZX
+cipher is 212624
+</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># knowing the cipher numbers, I&#39;ll manually build the possible set of messages </span>
+combos <span style="color:#f92672">=</span> [[<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">6</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">4</span>],
+          [<span style="color:#ae81ff">21</span>,<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">6</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">4</span>],
+          [<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">12</span>,<span style="color:#ae81ff">6</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">4</span>],
+          [<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">26</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">4</span>],
+          [<span style="color:#ae81ff">21</span>,<span style="color:#ae81ff">26</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">4</span>],
+          [<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">26</span>,<span style="color:#ae81ff">24</span>],
+          [<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">6</span>,<span style="color:#ae81ff">24</span>],
+          [<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">12</span>,<span style="color:#ae81ff">6</span>,<span style="color:#ae81ff">24</span>],
+          [<span style="color:#ae81ff">21</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">6</span>,<span style="color:#ae81ff">24</span>],
+          [<span style="color:#ae81ff">21</span>,<span style="color:#ae81ff">26</span>,<span style="color:#ae81ff">24</span>],
+         ]
+ALPHA <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;_ABCDEFGHIJKLMNOPQRSTUVWXYZ&#34;</span>
+s <span style="color:#f92672">=</span> set()
+<span style="color:#66d9ef">for</span> c <span style="color:#f92672">in</span> combos:
+    s<span style="color:#f92672">.</span>add(
+        <span style="color:#e6db74">&#34;&#34;</span><span style="color:#f92672">.</span>join(
+        map(<span style="color:#66d9ef">lambda</span> x: ALPHA[x], c)
+    ))
+<span style="color:#66d9ef">print</span>(f<span style="color:#e6db74">&#34;possible {len(s)} messages {s}&#34;</span>)
+
+<span style="color:#66d9ef">print</span>(f<span style="color:#e6db74">&#34;total possible messages calculated: {do_it(cipher)}&#34;</span>)
+</code></pre></div><pre><code>possible 10 messages {'UABFBD', 'UBFX', 'BABFX', 'BLFBD', 'BAZX', 'BLFX', 'UZX', 'BAZBD', 'BABFBD', 'UZBD'}
+total possible messages calculated: 10
+</code></pre>
+
+
+      
+        <div class="blog-tags">
+          
+            <a href="https://bobbys-dev.github.io//tags/memoization/">memoization</a>&nbsp;
+          
+            <a href="https://bobbys-dev.github.io//tags/dynamic-programming/">dynamic programming</a>&nbsp;
+          
+        </div>
+      
+    </article>
+    
+  </div>
+
+        </div><footer>
+  <div class="container">
+    <p class="credits copyright">
+      <p class="credits theme-by">
+         <a href="https://bobbys-dev.github.io/">blog home</a>&nbsp;|&nbsp;<a href="https://github.com/bobbys-dev">github</a>&nbsp;|&nbsp;<a href="https://bobbys-dev.github.io/about">bobbys</a>
+        &copy;
+        2020
+        <br>
+        Powered By <a href="https://gohugo.io">Hugo</a>&nbsp;/&nbsp;Theme&nbsp;<a href="https://github.com/7ma7X/HugoTeX">HugoTeX</a>
+      </p>
+  </div>
+</footer></body>
+</html>

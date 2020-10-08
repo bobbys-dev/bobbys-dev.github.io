@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Posts on bobbys-dev blog</title>
-    <link>https://bobbys-dev.github.io/post/</link>
-    <description>Recent content in Posts on bobbys-dev blog</description>
+    <title>memoization on bobbys-dev blog</title>
+    <link>https://bobbys-dev.github.io/tags/memoization/</link>
+    <description>Recent content in memoization on bobbys-dev blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 08 Oct 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://bobbys-dev.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 08 Oct 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://bobbys-dev.github.io/tags/memoization/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Hello World</title>
       <link>https://bobbys-dev.github.io/post/ways_2_decode_nums/</link>
@@ -20,15 +20,6 @@
 &amp;hellip;&lt;br&gt;
 &amp;lsquo;Z&amp;rsquo; -&amp;gt; &amp;lsquo;26&amp;rsquo;&lt;br&gt;
 The input is a string of numbers and the output is a number counting all the possible ways a message could be decoded.&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>Hello World</title>
-      <link>https://bobbys-dev.github.io/post/hello-world/</link>
-      <pubDate>Mon, 05 Oct 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://bobbys-dev.github.io/post/hello-world/</guid>
-      <description>&lt;p&gt;This blog lets you know what I&amp;rsquo;m up to. Start at the &lt;a href=&#34;../../../about&#34;&gt;About&lt;/a&gt; for a summary about me.&lt;/p&gt;</description>
     </item>
     
   </channel>

@@ -5,6 +5,16 @@
     <link>https://bobbys-dev.github.io/categories/</link>
     <description>Recent content in Categories on bobbys-dev blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language><atom:link href="https://bobbys-dev.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-us</language>
+    <lastBuildDate>Thu, 08 Oct 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://bobbys-dev.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>coding</title>
+      <link>https://bobbys-dev.github.io/categories/coding/</link>
+      <pubDate>Thu, 08 Oct 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://bobbys-dev.github.io/categories/coding/</guid>
+      <description></description>
+    </item>
+    
   </channel>
 </rss>
