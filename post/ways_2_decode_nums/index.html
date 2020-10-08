@@ -48,17 +48,18 @@
       </div>
       <br>
       
-    <h2 id="scenario">Scenario</h2>
+    <h3 id="scenario">Scenario</h3>
 <p>Determine number of possible ways to decode a given Caeser cipher encoded message that  maps:<br>
 &lsquo;A&rsquo; -&gt; &lsquo;1&rsquo;<br>
 &lsquo;B&rsquo; -&gt; &lsquo;2&rsquo;<br>
 &hellip;<br>
 &lsquo;Z&rsquo; -&gt; &lsquo;26&rsquo;<br>
-The input is a string of numbers and the output is a number counting all the possible ways a message could be decoded.</p>
+The input is a string of n numbers and the output is a number counting all the possible ways a message could be decoded&hellip;</p>
 <p>For message = &ldquo;122&rdquo;, there are 3 possible ways to decode the message:<br>
 &ldquo;ABB&rdquo; (1 2 2)<br>
 &ldquo;LB&rdquo; (12 2)<br>
 &ldquo;AV&rdquo; (1 22)</p>
+<p>The good solution here should take O(n) time.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> random
 <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">generate_message</span>():
     <span style="color:#e6db74">&#34;&#34;&#34;
@@ -80,7 +81,7 @@ generate_message()
 <h3 id="observation">Observation</h3>
 <p>For a long string of 1&rsquo;s of length n, the total number of letter combinations ends up being the number of ways for n-1 plus number of ways for n-2.</p>
 <p>For example, take cases for n=2, n=3, and n=4. For n=2, &lsquo;11&rsquo; decodes to one of (&lsquo;A&rsquo;,&lsquo;A&rsquo;) or (&lsquo;K&rsquo;), making 2 possible decodings. For n=3, &lsquo;111&rsquo; could be a set of 3 messages: (&lsquo;A&rsquo;,&lsquo;A&rsquo;,&lsquo;A&rsquo;) (&lsquo;A&rsquo;,&lsquo;K&rsquo;), or (&lsquo;K&rsquo;,&lsquo;A&rsquo;). If you write out the possible decoding set for n=4 &lsquo;1111&rsquo;, you&rsquo;ll have written 5 possible messages, which, importantly, is 2+3 (the addition of counts of previous two message lengths).</p>
-<p>With that in mind, we&rsquo;ll use memoization to precalculate validly consecutive values for future use.</p>
+<p>With that in mind, I&rsquo;ll use memoization to precalculate validly consecutive values for future use.</p>
 <p>I&rsquo;ll only memoize 51 elements because the message is <strong>randomly and independently generated from equal probability distribution of letters</strong>, and there is a very low chance we&rsquo;ll have a very long string of letters that fit this kind of observation. Similarly, in the real world we&rsquo;ll most likely run into halting letter (see next observation).</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># caveat you could have test case with intentionally very long message</span>
 ways <span style="color:#f92672">=</span> [<span style="color:#ae81ff">1</span>]<span style="color:#f92672">*</span><span style="color:#ae81ff">51</span>
