@@ -86,11 +86,11 @@ generate_message()
 ways <span style="color:#f92672">=</span> [<span style="color:#ae81ff">1</span>]<span style="color:#f92672">*</span><span style="color:#ae81ff">51</span>
 <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">2</span>,len(ways)):
     ways[i] <span style="color:#f92672">=</span> ways[i<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>] <span style="color:#f92672">+</span> ways[i<span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>]
-</code></pre></div><p>So generally, ways[j] represents how many letter combinations are possible considering numbers [0:j-1], inclusive, of the message, but there are special numbers that signal a subset of all the possible letters.</p>
+</code></pre></div><p>So generally, ways[j] represents how many letter combinations are possible considering numbers [0:j-1], inclusive, of the message, but there are special numbers that signal a subset of all the possible letters.</p>
 <h3 id="observations">Observations</h3>
 <ul>
 <li>ways[0] = 1 because <em>a single number can only represent a single letter</em>, but also, it can&rsquo;t be letters [J:Z]</li>
-<li>ways[1] = 1 way if message[0] &gt; 2 because only [CDEFGHI] could be &gt; 2, so there are 2 letters; else (since message[0]&lt;=2), ways = 2 because it could be two letters where message[0] can only be [AB] and message[1] takes on a value of [1:9] corresponding to [A:I], assuming the message terminates at this position.</li>
+<li>ways[1] = 1 way if message[0] &gt; 2 because only [CDEFGHI] could be &gt; 2, so there are 2 letters; else (since message[0] &lt;= 2), ways = 2 because it could be two letters where message[0] can only be [AB] and message[1] takes on a value of [1:9] corresponding to [A:I], assuming the message terminates at this position.</li>
 </ul>
 <p>Because there are numbers that indicate a specific subset of possible letters, I&rsquo;ll take a dynamic programming approach and consider whether to include the current number in the previous section of numbers, or whether there should be a section break. A section break means I&rsquo;ll have to multiply the possible ways of the last section with the possible ways of the next section. I&rsquo;ll break sections by considering classes of digits.</p>
 <p><strong>Classes of digits</strong> are characterized base on its value and the previous value. Assume x as a qualified number that is to be considered with the current section.</p>
