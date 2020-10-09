@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en-us"><meta charset="utf-8" />
+
+  <title>Fast&#39;n&#39;lazy stack 🥞🥞🥞 - bobbys-dev blog</title>
+
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="https://bobbys-dev.github.io/css/latex.css" />
+<link rel="stylesheet" href="https://bobbys-dev.github.io/css/main.css" />
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<meta name="generator" content="Hugo 0.75.1" /><body>
+
+
+
+
+
+
+<header>
+  <nav class="navbar">
+  <div class="nav">
+    
+
+    <ul class="nav-links">
+      
+    </ul>
+  </div>
+</nav>
+  <div class="intro-header">
+    <div class="container">
+      <div class="post-heading">
+        
+          <h1>Fast&#39;n&#39;lazy stack 🥞🥞🥞</h1>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+<div id="content">
+  <div class="container" role="main">
+    <article class="article" class="blog-post">
+      <div class="postmeta">
+        <span class="meta-post">
+  <i class="fa fa-calendar-alt"></i>Oct 9, 2020
+  
+</span>
+      </div>
+      <br>
+      
+    <p>A funky stack that is lazy but fast.</p>
+<h3 id="scenario">Scenario</h3>
+<p>We have to implement 3 operations on a stack-like list structure: <code>push [value]</code>, <code>pop</code>, and an increment operation, <code>inc [i] [value]</code>, that adds <code>[value]</code> to the bottom <code>[i]</code> elements of the stack (<code>[value]</code> can be negative). For example, <code>inc 3 10</code> changes the bottom 3 data points in a stack as such:</p>
+<pre><code>| 5|      | 5| (top)
+| 4|      | 4|
+| 2|  =&gt;  |12|
+| 2|      |12|
+| 3|      |13| (bottom)
+</code></pre><p>At first read, this is simple, but there&rsquo;s a way to make run it faster than you might&rsquo;ve considered&hellip;</p>
+<p>The push and pop operations are fairly simple, but we want to make the increment operation &ldquo;lazy&rdquo;. So, we&rsquo;ll need to modify them as we implement the increment operation such that we don&rsquo;t do any direct calculation on the stack values until the user actually reads data from the stack (i.e. peeks the top value).</p>
+<p>The idea is that a lazy increment is an <em>optimization</em> that does less processing at the time that the instruction is recieved. We need do some accounting with a running sum of value increments at each applicable index. When the value is retrieved, we&rsquo;ll have an extra arithmetic operation that accounts for any past increment operation that should have been applied to it. This is supposed to be faster than adding the values to each of the bottom elements at the moment that the increment function is called, especially when you have a very large stack and many increments on a significant bottom portion of the stack.</p>
+<p>The following <code>instructions()</code> function is not part of the solution. It is just used to generate push/pop/inc instructions for testing the implementation.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> random
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">instructions</span>(n):
+    <span style="color:#e6db74">&#34;&#34;&#34;
+</span><span style="color:#e6db74">    Randomly generates operations: &#39;push v&#39;, &#39;pop&#39;, or &#39;inc i v&#39;
+</span><span style="color:#e6db74">    For ease of implementation, the function won&#39;t generate a pop instruction
+</span><span style="color:#e6db74">    on an empty stack, and it will ask to increment i elements where
+</span><span style="color:#e6db74">    i &lt;= current size of the stack.
+</span><span style="color:#e6db74">    The function is slightly more likely to generate &#39;push&#39; than the other instructions.
+</span><span style="color:#e6db74">    &#34;&#34;&#34;</span>
+    capacity <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+    <span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> range(n):
+        <span style="color:#66d9ef">if</span> capacity <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>:
+            select <span style="color:#f92672">=</span> random<span style="color:#f92672">.</span>randint(<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">3</span>)
+        <span style="color:#66d9ef">else</span>:
+            select <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>
+            
+        v <span style="color:#f92672">=</span> random<span style="color:#f92672">.</span>randint(<span style="color:#f92672">-</span><span style="color:#ae81ff">100</span>,<span style="color:#ae81ff">100</span>)
+        
+        <span style="color:#66d9ef">if</span> select <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+            capacity <span style="color:#f92672">-=</span> <span style="color:#ae81ff">1</span>
+            operation <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;pop&#39;</span>
+        <span style="color:#66d9ef">elif</span> select <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>:
+            i <span style="color:#f92672">=</span> random<span style="color:#f92672">.</span>randint(<span style="color:#ae81ff">1</span>,capacity)
+            operation <span style="color:#f92672">=</span> f<span style="color:#e6db74">&#39;inc {i} {v}&#39;</span>
+        <span style="color:#66d9ef">elif</span> select <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">2</span>:
+            capacity <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+            operation <span style="color:#f92672">=</span> f<span style="color:#e6db74">&#39;push {v}&#39;</span>
+            
+        <span style="color:#66d9ef">yield</span> operation
+
+</code></pre></div><p>Using a fixed seed, we&rsquo;ll generate &ldquo;consistently random&rdquo; instructions 😁</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">random<span style="color:#f92672">.</span>seed(<span style="color:#ae81ff">42</span>)
+<span style="color:#75715e"># c = 0</span>
+<span style="color:#66d9ef">for</span> instruction <span style="color:#f92672">in</span> instructions(<span style="color:#ae81ff">50</span>):
+<span style="color:#75715e">#     if &#39;pop&#39; in instruction:</span>
+<span style="color:#75715e">#         c -= 1</span>
+<span style="color:#75715e">#     elif &#39;push&#39; in instruction:</span>
+<span style="color:#75715e">#         c+= 1</span>
+    <span style="color:#66d9ef">print</span>(instruction)
+<span style="color:#75715e"># print(c)</span>
+
+</code></pre></div><pre><code>push 63
+pop
+push 89
+push -38
+inc 1 -65
+pop
+push -92
+pop
+inc 1 -41
+inc 1 83
+inc 1 14
+pop
+push -60
+push -13
+push -61
+inc 2 95
+pop
+push -76
+push -12
+push -89
+push 37
+pop
+pop
+push 60
+push 47
+inc 1 80
+pop
+inc 3 97
+pop
+pop
+push 16
+push -59
+push -10
+inc 3 71
+pop
+inc 2 36
+inc 4 18
+push 63
+inc 3 75
+pop
+pop
+push -32
+pop
+push -46
+push 1
+push -64
+push -65
+inc 5 90
+push 49
+push -8
+</code></pre>
+<h3 id="baseline-implementation">Baseline implementation</h3>
+<p>This straightfowardly implements push, pop, and increment using the existing python list data structure for a stack. For &lsquo;inc i v&rsquo;, it immediately adds [value] to the bottom [i] elements in the stack. The following cell prints the entire stack after each operation, and the cell after it times the implementation without printing. Refer to the sequence instructions above to follow which operation occured.</p>
+<p>The <code>do_it()</code> function is just a structure to demonstrate the implementation, the important part is loop and conditionals inside it.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">random<span style="color:#f92672">.</span>seed(<span style="color:#ae81ff">42</span>)
+
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BaseStack</span>:
+    
+    <span style="color:#66d9ef">def</span> __init__(self):
+        self<span style="color:#f92672">.</span>stack <span style="color:#f92672">=</span> []
+        
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">push</span>(self, v):
+        self<span style="color:#f92672">.</span>stack<span style="color:#f92672">.</span>append(v)
+        
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">pop</span>(self):
+        <span style="color:#66d9ef">if</span> len(self<span style="color:#f92672">.</span>stack) <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>:
+            self<span style="color:#f92672">.</span>stack<span style="color:#f92672">.</span>pop()        
+
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">inc</span>(self, i, v):
+        <span style="color:#66d9ef">for</span> r <span style="color:#f92672">in</span> range(i):
+            self<span style="color:#f92672">.</span>stack[r] <span style="color:#f92672">+=</span> v
+    
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">peek</span>(self):
+        <span style="color:#66d9ef">if</span> len(self<span style="color:#f92672">.</span>stack) <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>:
+            <span style="color:#66d9ef">return</span> self<span style="color:#f92672">.</span>stack[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
+        <span style="color:#66d9ef">else</span>:
+            <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;EMPTY&#34;</span>   
+    
+    <span style="color:#66d9ef">def</span> __len__(self):
+        <span style="color:#66d9ef">return</span> len(self<span style="color:#f92672">.</span>stack)
+    
+    <span style="color:#66d9ef">def</span> __str__(self):
+        <span style="color:#66d9ef">return</span> f<span style="color:#e6db74">&#34;{self.stack}&#34;</span>
+    
+    
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">do_it</span>(number_of_instructions<span style="color:#f92672">=</span><span style="color:#ae81ff">50</span>, print_func<span style="color:#f92672">=</span>(<span style="color:#66d9ef">lambda</span> x: x)):
+
+    stack <span style="color:#f92672">=</span> BaseStack()
+        
+    <span style="color:#66d9ef">for</span> instruction <span style="color:#f92672">in</span> instructions(number_of_instructions):
+        op <span style="color:#f92672">=</span> instruction<span style="color:#f92672">.</span>split()
+        <span style="color:#66d9ef">if</span> op[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;push&#39;</span>:
+            stack<span style="color:#f92672">.</span>push(int(op[<span style="color:#ae81ff">1</span>]))
+        <span style="color:#66d9ef">elif</span> op[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;pop&#39;</span>:
+            stack<span style="color:#f92672">.</span>pop()
+        <span style="color:#66d9ef">else</span>:
+            stack<span style="color:#f92672">.</span>inc(int(op[<span style="color:#ae81ff">1</span>]), int(op[<span style="color:#ae81ff">2</span>]))
+                
+        print_func(stack)
+
+    <span style="color:#75715e"># Now let&#39;s simulate a user 1) removing half of the stack and 2) examining the next top 3 set of elements</span>
+    <span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> range(int(len(stack)<span style="color:#f92672">/</span><span style="color:#ae81ff">2</span>)):
+        stack<span style="color:#f92672">.</span>pop()
+    
+    <span style="color:#75715e"># peek and pop 3 elements</span>
+    <span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">3</span>):
+        print_func(stack<span style="color:#f92672">.</span>peek())
+        stack<span style="color:#f92672">.</span>pop()
+        
+do_it(print_func<span style="color:#f92672">=</span><span style="color:#66d9ef">lambda</span> x: <span style="color:#66d9ef">print</span>(x))
+</code></pre></div><pre><code>[63]
+[]
+[89]
+[89, -38]
+[24, -38]
+[24]
+[24, -92]
+[24]
+[-17]
+[66]
+[80]
+[]
+[-60]
+[-60, -13]
+[-60, -13, -61]
+[35, 82, -61]
+[35, 82]
+[35, 82, -76]
+[35, 82, -76, -12]
+[35, 82, -76, -12, -89]
+[35, 82, -76, -12, -89, 37]
+[35, 82, -76, -12, -89]
+[35, 82, -76, -12]
+[35, 82, -76, -12, 60]
+[35, 82, -76, -12, 60, 47]
+[115, 82, -76, -12, 60, 47]
+[115, 82, -76, -12, 60]
+[212, 179, 21, -12, 60]
+[212, 179, 21, -12]
+[212, 179, 21]
+[212, 179, 21, 16]
+[212, 179, 21, 16, -59]
+[212, 179, 21, 16, -59, -10]
+[283, 250, 92, 16, -59, -10]
+[283, 250, 92, 16, -59]
+[319, 286, 92, 16, -59]
+[337, 304, 110, 34, -59]
+[337, 304, 110, 34, -59, 63]
+[412, 379, 185, 34, -59, 63]
+[412, 379, 185, 34, -59]
+[412, 379, 185, 34]
+[412, 379, 185, 34, -32]
+[412, 379, 185, 34]
+[412, 379, 185, 34, -46]
+[412, 379, 185, 34, -46, 1]
+[412, 379, 185, 34, -46, 1, -64]
+[412, 379, 185, 34, -46, 1, -64, -65]
+[502, 469, 275, 124, 44, 1, -64, -65]
+[502, 469, 275, 124, 44, 1, -64, -65, 49]
+[502, 469, 275, 124, 44, 1, -64, -65, 49, -8]
+44
+124
+275
+</code></pre>
+<p>Now let&rsquo;s see the timing.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">%%</span>timeit
+random<span style="color:#f92672">.</span>seed(<span style="color:#ae81ff">42</span>)
+
+do_it(number_of_instructions<span style="color:#f92672">=</span><span style="color:#ae81ff">20000</span>)
+</code></pre></div><pre><code>998 ms ± 209 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
+</code></pre>
+<h3 id="make-it-lazy">Make it lazy</h3>
+<p>In general, <code>inc i v</code> applies to stack elements at indices i-1 down to 0. The approach to make the increment lazy is to use another data structure to account for what values to increment and at which section indices. We &ldquo;save&rdquo; information from any increment instruction into this collection, and only apply the increment when data from the stack is needed. The extra expense* of this optimization is that it takes up more space: O(n) where n is the number of unique i of increments encountered in the instructions. The collection is a dictionary where each entry is of the format <code>{k: value}</code>, where <code>value</code> is the summation of all <code>value</code> in <code>inc k value</code> received for that specific <code>k</code>. To ensure the summation applies downward, we&rsquo;ll do the following&hellip;</p>
+<p>The <code>incs</code> dictionary is in lockstep with the the top of the stack. It also holds all various increments applicable to lower sections of the stack. Let&rsquo;s refer to the index at the top of the stack as <code>j</code>. If we have a 0-indexed stack, then j == length of the stack minus 1. When data from the top of the stack is accessed (i.e. peek), we will get the value from the top of the stack and add to it the value collected from all inc instruction that applies to it. Getting this value is simply the value at dictionary&rsquo;s key = length of stack. Whenever we pop the stack, we need to preserve the value increments in the dictionary by adding the value to the very next index/key down.</p>
+<p>Observe on the output of the following cell that:</p>
+<ul>
+<li>
+<p>after each processing of an instruction, we have an intermediate print out of the stack, and it shows the &ldquo;unincremented&rdquo; elements, but&hellip;</p>
+</li>
+<li>
+<p>when we simulate the user examining the elements at the top of the actual stack, the values are consistent to what they should be when the increment operations were applied.</p>
+</li>
+</ul>
+<p>*Outside the scope of this demonstration, this could be improved by a &ldquo;maintenance&rdquo; during processor idle time: applying the collective increments when the user is not interacting with the stack, then freeing up <code>incs</code> dictionary until more instructions come in.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">random<span style="color:#f92672">.</span>seed(<span style="color:#ae81ff">42</span>)
+
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">LazyStack</span>:
+    
+    <span style="color:#66d9ef">def</span> __init__(self):
+        self<span style="color:#f92672">.</span>stack <span style="color:#f92672">=</span> []
+        self<span style="color:#f92672">.</span>incs <span style="color:#f92672">=</span> {}
+        
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">push</span>(self, v):
+        self<span style="color:#f92672">.</span>stack<span style="color:#f92672">.</span>append(v)
+        
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">pop</span>(self):    
+        length <span style="color:#f92672">=</span> len(self<span style="color:#f92672">.</span>stack)
+        <span style="color:#66d9ef">if</span> length <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>:
+            <span style="color:#75715e"># clear top transaction and preserve its downward transactions by moving it one position down</span>
+            <span style="color:#66d9ef">if</span> self<span style="color:#f92672">.</span>incs<span style="color:#f92672">.</span>get(length):
+                self<span style="color:#f92672">.</span>incs[length<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>incs<span style="color:#f92672">.</span>get(length<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>) <span style="color:#f92672">+</span> self<span style="color:#f92672">.</span>incs<span style="color:#f92672">.</span>get(length)
+                self<span style="color:#f92672">.</span>incs[length] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+            self<span style="color:#f92672">.</span>stack<span style="color:#f92672">.</span>pop()            
+
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">inc</span>(self, i, v):
+        self<span style="color:#f92672">.</span>incs[i] <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>incs<span style="color:#f92672">.</span>get(i, <span style="color:#ae81ff">0</span>) <span style="color:#f92672">+</span> v
+    
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">peek</span>(self):
+        <span style="color:#e6db74">&#34;&#34;&#34;
+</span><span style="color:#e6db74">        Note the ith_element means apply to indices [0: ith_element-1] inclusive of the stack
+</span><span style="color:#e6db74">        &#34;&#34;&#34;</span>
+        ith_element <span style="color:#f92672">=</span> len(self<span style="color:#f92672">.</span>stack)
+        <span style="color:#66d9ef">if</span> ith_element <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>:
+            <span style="color:#66d9ef">return</span> self<span style="color:#f92672">.</span>stack[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>] <span style="color:#f92672">+</span> self<span style="color:#f92672">.</span>incs[ith_element]
+        <span style="color:#66d9ef">else</span>:
+            <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;EMPTY&#34;</span>
+    
+    <span style="color:#66d9ef">def</span> __len__(self):
+        <span style="color:#66d9ef">return</span> len(self<span style="color:#f92672">.</span>stack)
+    
+    <span style="color:#66d9ef">def</span> __str__(self):
+        <span style="color:#66d9ef">return</span> f<span style="color:#e6db74">&#34;{self.stack}&#34;</span>
+    
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">do_it_better</span>(number_of_instructions<span style="color:#f92672">=</span><span style="color:#ae81ff">50</span>, print_func<span style="color:#f92672">=</span>(<span style="color:#66d9ef">lambda</span> x: x)):
+    stack <span style="color:#f92672">=</span> LazyStack()
+    
+    <span style="color:#66d9ef">for</span> instruction <span style="color:#f92672">in</span> instructions(number_of_instructions):
+        op <span style="color:#f92672">=</span> instruction<span style="color:#f92672">.</span>split()
+        <span style="color:#66d9ef">if</span> op[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;push&#39;</span>:
+            stack<span style="color:#f92672">.</span>push(int(op[<span style="color:#ae81ff">1</span>]))
+        <span style="color:#66d9ef">elif</span> op[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;pop&#39;</span>:
+            stack<span style="color:#f92672">.</span>pop()
+        <span style="color:#66d9ef">else</span>:
+            stack<span style="color:#f92672">.</span>inc(int(op[<span style="color:#ae81ff">1</span>]), int(op[<span style="color:#ae81ff">2</span>]))
+
+        print_func(stack)
+    
+    
+    <span style="color:#75715e"># Now let&#39;s simulate a user 1) removing half of the stack and 2) examining the next top 3 set of elements</span>
+    <span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> range(int(len(stack)<span style="color:#f92672">/</span><span style="color:#ae81ff">2</span>)):
+        stack<span style="color:#f92672">.</span>pop()
+    
+    <span style="color:#75715e"># peek and pop 3 elements</span>
+    <span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">3</span>):
+        print_func(stack<span style="color:#f92672">.</span>peek())
+        stack<span style="color:#f92672">.</span>pop()
+
+do_it_better(print_func<span style="color:#f92672">=</span>(<span style="color:#66d9ef">lambda</span> x: <span style="color:#66d9ef">print</span>(x)))       
+</code></pre></div><pre><code>[63]
+[]
+[89]
+[89, -38]
+[89, -38]
+[89]
+[89, -92]
+[89]
+[89]
+[89]
+[89]
+[]
+[-60]
+[-60, -13]
+[-60, -13, -61]
+[-60, -13, -61]
+[-60, -13]
+[-60, -13, -76]
+[-60, -13, -76, -12]
+[-60, -13, -76, -12, -89]
+[-60, -13, -76, -12, -89, 37]
+[-60, -13, -76, -12, -89]
+[-60, -13, -76, -12]
+[-60, -13, -76, -12, 60]
+[-60, -13, -76, -12, 60, 47]
+[-60, -13, -76, -12, 60, 47]
+[-60, -13, -76, -12, 60]
+[-60, -13, -76, -12, 60]
+[-60, -13, -76, -12]
+[-60, -13, -76]
+[-60, -13, -76, 16]
+[-60, -13, -76, 16, -59]
+[-60, -13, -76, 16, -59, -10]
+[-60, -13, -76, 16, -59, -10]
+[-60, -13, -76, 16, -59]
+[-60, -13, -76, 16, -59]
+[-60, -13, -76, 16, -59]
+[-60, -13, -76, 16, -59, 63]
+[-60, -13, -76, 16, -59, 63]
+[-60, -13, -76, 16, -59]
+[-60, -13, -76, 16]
+[-60, -13, -76, 16, -32]
+[-60, -13, -76, 16]
+[-60, -13, -76, 16, -46]
+[-60, -13, -76, 16, -46, 1]
+[-60, -13, -76, 16, -46, 1, -64]
+[-60, -13, -76, 16, -46, 1, -64, -65]
+[-60, -13, -76, 16, -46, 1, -64, -65]
+[-60, -13, -76, 16, -46, 1, -64, -65, 49]
+[-60, -13, -76, 16, -46, 1, -64, -65, 49, -8]
+44
+124
+275
+</code></pre>
+<p>So now we&rsquo;ve verfied the results are consistent. Let&rsquo;s see how fast it would be to process many instructions and a larger stack</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">%%</span>timeit
+random<span style="color:#f92672">.</span>seed(<span style="color:#ae81ff">42</span>)
+
+do_it_better(number_of_instructions<span style="color:#f92672">=</span><span style="color:#ae81ff">20000</span>)       
+</code></pre></div><pre><code>100 ms ± 4.47 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
+</code></pre>
+<h3 id="so-after-20000-randomized-poppushinc-instructions-the-lazy-stack-speed-up-is-10-times-faster-over-the-baseline-01-s-vs-1-s-">So, after 20000 randomized pop/push/inc instructions, the lazy stack speed up is 10 times faster over the baseline (0.1 s vs 1 s)! 😎</h3>
+<p>Most of the speedup comes from not incrementing each and every value when the <code>inc</code> instruction is received, and postponing the increments until the data is actually read. Integrating the value increments so that just one addition is done on the read also saves time.</p>
+<p>The <code>incs</code> dictionary stores minimal but precise information to make this work!</p>
+
+
+      
+        <div class="blog-tags">
+          
+            <a href="https://bobbys-dev.github.io//tags/memoization/">memoization</a>&nbsp;
+          
+        </div>
+      
+    </article>
+    
+  </div>
+
+        </div><footer>
+  <div class="container">
+    <p class="credits copyright">
+      <p class="credits theme-by">
+         <a href="https://bobbys-dev.github.io/">blog home</a>&nbsp;|&nbsp;<a href="https://github.com/bobbys-dev">github</a>&nbsp;|&nbsp;<a href="https://bobbys-dev.github.io/about">bobbys</a>
+        &copy;
+        2020
+        <br>
+        Powered By <a href="https://gohugo.io">Hugo</a>&nbsp;/&nbsp;Theme&nbsp;<a href="https://github.com/7ma7X/HugoTeX">HugoTeX</a>
+      </p>
+  </div>
+</footer></body>
+</html>

@@ -6,7 +6,24 @@
     <description>Recent content in algorithmic problem solving on bobbys-dev blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 08 Oct 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://bobbys-dev.github.io/series/algorithmic-problem-solving/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 09 Oct 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://bobbys-dev.github.io/series/algorithmic-problem-solving/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Fast&#39;n&#39;lazy stack 🥞🥞🥞</title>
+      <link>https://bobbys-dev.github.io/post/fast_n_lazy_stack/</link>
+      <pubDate>Fri, 09 Oct 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://bobbys-dev.github.io/post/fast_n_lazy_stack/</guid>
+      <description>&lt;p&gt;A funky stack that is lazy but fast.&lt;/p&gt;
+&lt;h3 id=&#34;scenario&#34;&gt;Scenario&lt;/h3&gt;
+&lt;p&gt;We have to implement 3 operations on a stack-like list structure: &lt;code&gt;push [value]&lt;/code&gt;, &lt;code&gt;pop&lt;/code&gt;, and an increment operation, &lt;code&gt;inc [i] [value]&lt;/code&gt;, that adds &lt;code&gt;[value]&lt;/code&gt; to the bottom &lt;code&gt;[i]&lt;/code&gt; elements of the stack (&lt;code&gt;[value]&lt;/code&gt; can be negative). For example, &lt;code&gt;inc 3 10&lt;/code&gt; changes the bottom 3 data points in a stack as such:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;| 5|      | 5| (top)
+| 4|      | 4|
+| 2|  =&amp;gt;  |12|
+| 2|      |12|
+| 3|      |13| (bottom)
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;At first read, this is simple, but there&amp;rsquo;s a way to make run it faster than you might&amp;rsquo;ve considered&amp;hellip;&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>Ways To Decode A Cipher 🔠</title>
       <link>https://bobbys-dev.github.io/post/ways_2_decode_nums/</link>
