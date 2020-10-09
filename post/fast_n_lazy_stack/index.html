@@ -92,15 +92,8 @@
 
 </code></pre></div><p>Using a fixed seed, we&rsquo;ll generate &ldquo;consistently random&rdquo; instructions 😁</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">random<span style="color:#f92672">.</span>seed(<span style="color:#ae81ff">42</span>)
-<span style="color:#75715e"># c = 0</span>
 <span style="color:#66d9ef">for</span> instruction <span style="color:#f92672">in</span> instructions(<span style="color:#ae81ff">50</span>):
-<span style="color:#75715e">#     if &#39;pop&#39; in instruction:</span>
-<span style="color:#75715e">#         c -= 1</span>
-<span style="color:#75715e">#     elif &#39;push&#39; in instruction:</span>
-<span style="color:#75715e">#         c+= 1</span>
     <span style="color:#66d9ef">print</span>(instruction)
-<span style="color:#75715e"># print(c)</span>
-
 </code></pre></div><pre><code>push 63
 pop
 push 89

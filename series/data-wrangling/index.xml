@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>data wrangling on bobbys-dev blog</title>
+    <link>https://bobbys-dev.github.io/series/data-wrangling/</link>
+    <description>Recent content in data wrangling on bobbys-dev blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 09 Oct 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://bobbys-dev.github.io/series/data-wrangling/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Ask Pandas</title>
+      <link>https://bobbys-dev.github.io/post/ask-pandas/</link>
+      <pubDate>Fri, 09 Oct 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://bobbys-dev.github.io/post/ask-pandas/</guid>
+      <description>&lt;p&gt;Pandas has a DataFrame method, &lt;a href=&#34;https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.query.html&#34;&gt;&lt;code&gt;query()&lt;/code&gt;&lt;/a&gt;, that lets you filter out subsets of data using a logical expression query. Since the expression is a string, it reads a little more naturally that subsetting dataframes using nested brackets. The expression is evaluated in a columnar fashion.&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -13,12 +13,27 @@
   </url>
   
   <url>
+    <loc>https://bobbys-dev.github.io/post/ask-pandas/</loc>
+    <lastmod>2020-10-09T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://bobbys-dev.github.io/series/data-wrangling/</loc>
+    <lastmod>2020-10-09T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://bobbys-dev.github.io/post/fast_n_lazy_stack/</loc>
     <lastmod>2020-10-09T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://bobbys-dev.github.io/tags/memoization/</loc>
+    <lastmod>2020-10-09T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://bobbys-dev.github.io/tags/pandas/</loc>
     <lastmod>2020-10-09T00:00:00+00:00</lastmod>
   </url>
   
