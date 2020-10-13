@@ -6,7 +6,16 @@
     <description>Recent content in Posts on bobbys-dev blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 09 Oct 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://bobbys-dev.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 12 Oct 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://bobbys-dev.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>PyTorch Intro</title>
+      <link>https://bobbys-dev.github.io/post/intro-to-pytorch/</link>
+      <pubDate>Mon, 12 Oct 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://bobbys-dev.github.io/post/intro-to-pytorch/</guid>
+      <description>&lt;p&gt;&lt;strong&gt;This notebook introduces PyTorch as a jump off from Numpy and shows tensors in forward propogation as a basis in building neural networks.&lt;/strong&gt;&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>Ask Pandas</title>
       <link>https://bobbys-dev.github.io/post/ask-pandas/</link>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>pytorch on bobbys-dev blog</title>
+    <link>https://bobbys-dev.github.io/tags/pytorch/</link>
+    <description>Recent content in pytorch on bobbys-dev blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 12 Oct 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://bobbys-dev.github.io/tags/pytorch/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>PyTorch Intro</title>
+      <link>https://bobbys-dev.github.io/post/intro-to-pytorch/</link>
+      <pubDate>Mon, 12 Oct 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://bobbys-dev.github.io/post/intro-to-pytorch/</guid>
+      <description>&lt;p&gt;&lt;strong&gt;This notebook introduces PyTorch as a jump off from Numpy and shows tensors in forward propogation as a basis in building neural networks.&lt;/strong&gt;&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

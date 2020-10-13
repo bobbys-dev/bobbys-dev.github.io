@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en-us"><meta charset="utf-8" />
+
+  <title>PyTorch Intro - bobbys-dev blog</title>
+
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="https://bobbys-dev.github.io/css/latex.css" />
+<link rel="stylesheet" href="https://bobbys-dev.github.io/css/main.css" />
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<meta name="generator" content="Hugo 0.75.1" /><body>
+
+
+
+
+
+
+<header>
+  <nav class="navbar">
+  <div class="nav">
+    
+
+    <ul class="nav-links">
+      
+    </ul>
+  </div>
+</nav>
+  <div class="intro-header">
+    <div class="container">
+      <div class="post-heading">
+        
+          <h1>PyTorch Intro</h1>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+<div id="content">
+  <div class="container" role="main">
+    <article class="article" class="blog-post">
+      <div class="postmeta">
+        <span class="meta-post">
+  <i class="fa fa-calendar-alt"></i>Oct 12, 2020
+  
+</span>
+      </div>
+      <br>
+      
+    <p><strong>This notebook introduces PyTorch as a jump off from Numpy and shows tensors in forward propogation as a basis in building neural networks.</strong></p>
+<h3 id="creating-tensors-in-pytorch">Creating tensors in PyTorch</h3>
+<p><strong>PyTorch has constructs to create and operate on tensors variables in the same way as Numpy n-dimension arrays.</strong></p>
+<p>Tensors are arrays with arbitrary dimensions. Parameters in neural networks are usually initialized to random weights, which are held in tensors.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> torch
+<span style="color:#75715e"># Set seed for reproducible results</span>
+torch<span style="color:#f92672">.</span>random<span style="color:#f92672">.</span>manual_seed(<span style="color:#ae81ff">42</span>)
+
+<span style="color:#75715e"># Create a random 3x3 tensor</span>
+my_tensor <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>rand(<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">3</span>)
+
+<span style="color:#75715e"># Print tensor elements and size of tensor</span>
+<span style="color:#66d9ef">print</span>(f<span style="color:#e6db74">&#34;tensor size aka shape: {my_tensor.shape}&#34;</span>)
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;tensor elements:&#34;</span>)
+<span style="color:#66d9ef">print</span>(my_tensor)
+</code></pre></div><pre><code>tensor size aka shape: torch.Size([3, 3])
+tensor elements:
+tensor([[0.8823, 0.9150, 0.3829],
+        [0.9593, 0.3904, 0.6009],
+        [0.2566, 0.7936, 0.9408]])
+</code></pre>
+<h3 id="multiplication">Multiplication</h3>
+<p><strong>PyTorch has different tensor multiplication methods, including matrix multiplication and element-wise multiplication.</strong></p>
+<p><a href="https://en.wikipedia.org/wiki/Matrix_multiplication">Matrix multiplication</a> is done by <code>torch.matmul()</code></p>
+<p>Element-wise multiplication is provided by the <a href="https://en.wikipedia.org/wiki/Binary_operation">binary operator</a> <code>*</code></p>
+<p>Recall you get the same matrix back when multiplying a matrix by its identity matrix.</p>
+<p>In element by element multiplication, you multiply elements $a_{i,j}, b_{i,j}$ of matrices $A$ and $B$ to get $c_{i,j}$ for product matrix $C$</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># Use torch.ones(n,m) to create a nxm matrix of all 1s</span>
+tensor_of_ones <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>ones(<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">3</span>)
+
+<span style="color:#75715e"># Use torch.eye(n,m) to create identity matrix</span>
+identity_tensor <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>eye(<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">3</span>)
+
+<span style="color:#66d9ef">print</span>(f<span style="color:#e6db74">&#34;tensor of ones:</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">{tensor_of_ones}&#34;</span>)
+<span style="color:#66d9ef">print</span>(f<span style="color:#e6db74">&#34;identity tensor:</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">{identity_tensor}&#34;</span>)
+
+
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;&#34;Regular&#34; matrix multiplication&#39;</span>)
+<span style="color:#66d9ef">print</span>(torch<span style="color:#f92672">.</span>matmul(tensor_of_ones, identity_tensor))
+
+<span style="color:#75715e"># Element-wise matrix multiplication</span>
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;&#34;Element-wise&#34; multiplication of matrices&#39;</span>)
+<span style="color:#66d9ef">print</span>(tensor_of_ones<span style="color:#f92672">*</span>identity_tensor)
+</code></pre></div><pre><code>tensor of ones:
+tensor([[1., 1., 1.],
+        [1., 1., 1.],
+        [1., 1., 1.]])
+identity tensor:
+tensor([[1., 0., 0.],
+        [0., 1., 0.],
+        [0., 0., 1.]])
+&quot;Regular&quot; matrix multiplication
+tensor([[1., 1., 1.],
+        [1., 1., 1.],
+        [1., 1., 1.]])
+&quot;Element-wise&quot; multiplication of matrices
+tensor([[1., 0., 0.],
+        [0., 1., 0.],
+        [0., 0., 1.]])
+</code></pre>
+<h3 id="forward-propogration">Forward propogration</h3>
+<p><strong>Forward propogation, simply put, is giving data a single pass through the neural network layers.</strong></p>
+<p>This step, also called forward pass, is an fundamental in training and eval of classifiers. It takes input data, does operations on the data in the inner layers, and outputs the transformed data. Each layer takes values from the previous layer.</p>
+<p>The cell below does forward propogation of input values. Ihe input nodes are a, b, c, and d. Node e is the sum of a and b, node f is the multiplication of c and d, and output node g is the max of e and f. The inner layer are nodes e and f.</p>
+<p>a: 5<br>
+b: 7<br>
+c: 6<br>
+d: 9</p>
+<p>e: 12 = 5 + 7<br>
+f: 54 = 6 * 9</p>
+<p>g: 54 = max(12, 54)</p>
+<p>While this is a very simplistic example, we&rsquo;ll see later that PyTorch uses computational graphs to make computation of derivatives and gradients easier.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">torch<span style="color:#f92672">.</span>random<span style="color:#f92672">.</span>manual_seed(<span style="color:#ae81ff">42</span>)
+
+a <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>randint(high<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>, size<span style="color:#f92672">=</span>(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">1</span>))
+b <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>randint(high<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>, size<span style="color:#f92672">=</span>(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">1</span>))
+c <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>randint(high<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>, size<span style="color:#f92672">=</span>(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">1</span>))
+d <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>randint(high<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>, size<span style="color:#f92672">=</span>(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">1</span>))
+
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;Input nodes a, b, c&#34;</span>)
+<span style="color:#66d9ef">print</span>(a)
+<span style="color:#66d9ef">print</span>(b)
+<span style="color:#66d9ef">print</span>(c)
+<span style="color:#66d9ef">print</span>(d)
+
+e <span style="color:#f92672">=</span> a <span style="color:#f92672">+</span> b
+f <span style="color:#f92672">=</span> c <span style="color:#f92672">*</span> d
+
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;inner layer e and f&#34;</span>)
+<span style="color:#66d9ef">print</span>(e)
+<span style="color:#66d9ef">print</span>(f)
+
+g <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>max(e,f)
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;output g&#34;</span>)
+<span style="color:#66d9ef">print</span>(g)
+</code></pre></div><pre><code>Input nodes a, b, c
+tensor([[5]])
+tensor([[7]])
+tensor([[6]])
+tensor([[9]])
+inner layer e and f
+tensor([[12]])
+tensor([[54]])
+output g
+tensor([[54]])
+</code></pre>
+<p>Another forward pass example but using larger rank tensors.</p>
+<p>Note <code>torch.rand_like(input)</code> is equivalent to <code>torch.rand(input.size(), dtype=input.dtype, layout=input.layout, device=input.device)</code>. This let&rsquo;s us create a random tensor that is has same properties as the source tensor.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">a <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>rand(<span style="color:#ae81ff">100</span>, <span style="color:#ae81ff">100</span>)
+b <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>rand_like(a)
+c <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>rand_like(a)
+<span style="color:#66d9ef">print</span>(f<span style="color:#e6db74">&#34;tensor a</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">{a}&#34;</span>)
+<span style="color:#66d9ef">print</span>(f<span style="color:#e6db74">&#34;tensor b</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">{b}&#34;</span>)
+<span style="color:#66d9ef">print</span>(f<span style="color:#e6db74">&#34;tensor c</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">{c}&#34;</span>)
+
+d <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>matmul(a, b)
+<span style="color:#66d9ef">print</span>(f<span style="color:#e6db74">&#34;tensor d</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">{d}&#34;</span>)
+
+e <span style="color:#f92672">=</span> c <span style="color:#f92672">*</span> d
+mean_e <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>mean(e)
+<span style="color:#66d9ef">print</span>(f<span style="color:#e6db74">&#34;tensor e</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">{e}&#34;</span>)
+<span style="color:#66d9ef">print</span>(f<span style="color:#e6db74">&#34;size of e {e.shape}&#34;</span>)
+<span style="color:#66d9ef">print</span>(f<span style="color:#e6db74">&#34;average of elements in e {mean_e}&#34;</span>)
+
+</code></pre></div><pre><code>tensor a
+tensor([[0.0711, 0.2805, 0.4312,  ..., 0.2972, 0.9673, 0.6259],
+        [0.9810, 0.3363, 0.6546,  ..., 0.3229, 0.6846, 0.2764],
+        [0.0909, 0.4161, 0.9713,  ..., 0.0207, 0.7353, 0.2551],
+        ...,
+        [0.4391, 0.2498, 0.8701,  ..., 0.6475, 0.1560, 0.5830],
+        [0.3359, 0.9406, 0.2543,  ..., 0.9428, 0.6894, 0.0765],
+        [0.0550, 0.0198, 0.2295,  ..., 0.9022, 0.4749, 0.0778]])
+tensor b
+tensor([[0.1096, 0.4660, 0.8143,  ..., 0.8509, 0.9870, 0.5720],
+        [0.5736, 0.4108, 0.6739,  ..., 0.2601, 0.8542, 0.7942],
+        [0.2526, 0.6742, 0.7890,  ..., 0.7083, 0.5828, 0.0388],
+        ...,
+        [0.6246, 0.9720, 0.6070,  ..., 0.1586, 0.7316, 0.8186],
+        [0.2942, 0.1779, 0.7140,  ..., 0.3927, 0.6736, 0.3706],
+        [0.2667, 0.3007, 0.7462,  ..., 0.0731, 0.5366, 0.2679]])
+tensor c
+tensor([[0.6993, 0.6038, 0.8744,  ..., 0.7262, 0.3757, 0.8747],
+        [0.2356, 0.3697, 0.1620,  ..., 0.3008, 0.3923, 0.5617],
+        [0.1525, 0.7515, 0.8436,  ..., 0.2641, 0.8710, 0.2220],
+        ...,
+        [0.2834, 0.8367, 0.4250,  ..., 0.9593, 0.3301, 0.7327],
+        [0.6308, 0.4047, 0.8923,  ..., 0.7597, 0.8182, 0.6766],
+        [0.3003, 0.1302, 0.5621,  ..., 0.3625, 0.8835, 0.0587]])
+tensor d
+tensor([[25.8951, 23.9216, 23.6148,  ..., 25.6046, 26.3310, 24.9499],
+        [23.2617, 22.3270, 23.1557,  ..., 23.6731, 25.1142, 25.8058],
+        [25.4751, 24.8487, 22.5181,  ..., 25.1717, 26.1975, 25.5598],
+        ...,
+        [26.9132, 24.6827, 23.6633,  ..., 24.8387, 26.5065, 26.3920],
+        [25.5985, 22.9188, 22.4873,  ..., 25.2619, 26.3397, 27.3959],
+        [26.5511, 27.1494, 26.0090,  ..., 27.3040, 28.2337, 27.7980]])
+tensor e
+tensor([[18.1081, 14.4431, 20.6483,  ..., 18.5930,  9.8915, 21.8248],
+        [ 5.4804,  8.2544,  3.7505,  ...,  7.1199,  9.8522, 14.4943],
+        [ 3.8854, 18.6749, 18.9955,  ...,  6.6485, 22.8174,  5.6746],
+        ...,
+        [ 7.6275, 20.6509, 10.0563,  ..., 23.8266,  8.7502, 19.3364],
+        [16.1487,  9.2757, 20.0664,  ..., 19.1908, 21.5513, 18.5373],
+        [ 7.9739,  3.5353, 14.6193,  ...,  9.8965, 24.9449,  1.6316]])
+size of e torch.Size([100, 100])
+average of elements in e 12.640617370605469
+</code></pre>
+<p><strong>You&rsquo;ve now read through elemental components of PyTorch and how PyTorch works with computational graphs in forward propogation, a fundamental step in building a neural network. Stay tuned for what happens next in training a neural network. 🐱‍💻</strong></p>
+
+
+      
+        <div class="blog-tags">
+          
+            <a href="https://bobbys-dev.github.io//tags/pytorch/">pytorch</a>&nbsp;
+          
+            <a href="https://bobbys-dev.github.io//tags/numpy/">numpy</a>&nbsp;
+          
+        </div>
+      
+    </article>
+    
+  </div>
+
+        </div><footer>
+  <div class="container">
+    <p class="credits copyright">
+      <p class="credits theme-by">
+         <a href="https://bobbys-dev.github.io/">blog home</a>&nbsp;|&nbsp;<a href="https://github.com/bobbys-dev">github</a>&nbsp;|&nbsp;<a href="https://bobbys-dev.github.io/about">bobbys</a>
+        &copy;
+        2020
+        <br>
+        Powered By <a href="https://gohugo.io">Hugo</a>&nbsp;/&nbsp;Theme&nbsp;<a href="https://github.com/7ma7X/HugoTeX">HugoTeX</a>
+      </p>
+  </div>
+</footer></body>
+</html>

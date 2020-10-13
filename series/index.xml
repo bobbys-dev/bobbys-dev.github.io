@@ -6,7 +6,16 @@
     <description>Recent content in Series on bobbys-dev blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 09 Oct 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://bobbys-dev.github.io/series/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 12 Oct 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://bobbys-dev.github.io/series/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>deep learning with pytorch</title>
+      <link>https://bobbys-dev.github.io/series/deep-learning-with-pytorch/</link>
+      <pubDate>Mon, 12 Oct 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://bobbys-dev.github.io/series/deep-learning-with-pytorch/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>algorithmic problem solving</title>
       <link>https://bobbys-dev.github.io/series/algorithmic-problem-solving/</link>
