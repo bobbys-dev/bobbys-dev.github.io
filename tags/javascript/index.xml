@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>JavaScript on bobbys-dev blog</title>
+    <link>https://bobbys-dev.github.io/tags/javascript/</link>
+    <description>Recent content in JavaScript on bobbys-dev blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 26 Oct 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://bobbys-dev.github.io/tags/javascript/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>JavaScript functions</title>
+      <link>https://bobbys-dev.github.io/post/javascript-functions/</link>
+      <pubDate>Mon, 26 Oct 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://bobbys-dev.github.io/post/javascript-functions/</guid>
+      <description>&lt;p&gt;Functions in JavaScript are special built-in objects. Because their purpose is to interact with web components, they have properties and usages that are unique and different from common programming languages like Java/C++. There are different ways of coding JavaScript functions.&lt;/p&gt;
+&lt;p&gt;Let&amp;rsquo;s start with something familiar though. Regular functions are declared with a &lt;code&gt;function&lt;/code&gt; statement, and they are called by name like standard functions in other common languages . They are useful when you want to group lines of code that have a single responsibility.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-javascript&#34; data-lang=&#34;javascript&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;function&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;multiply&lt;/span&gt;() {
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;result&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;
+    &lt;span style=&#34;color:#a6e22e&#34;&gt;console&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;log&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;3 multiplied by 4 is &amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;result&lt;/span&gt;)
+}
+&lt;span style=&#34;color:#a6e22e&#34;&gt;multiply&lt;/span&gt;();
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;3 multiplied by 4 is  12
+&lt;/code&gt;&lt;/pre&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

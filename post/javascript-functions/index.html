@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en-us"><meta charset="utf-8" />
+
+  <title>JavaScript functions - bobbys-dev blog</title>
+
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="https://bobbys-dev.github.io/css/latex.css" />
+<link rel="stylesheet" href="https://bobbys-dev.github.io/css/main.css" />
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<meta name="generator" content="Hugo 0.75.1" /><body>
+
+
+
+
+
+
+<header>
+  <nav class="navbar">
+  <div class="nav">
+    
+
+    <ul class="nav-links">
+      
+    </ul>
+  </div>
+</nav>
+  <div class="intro-header">
+    <div class="container">
+      <div class="post-heading">
+        
+          <h1>JavaScript functions</h1>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+<div id="content">
+  <div class="container" role="main">
+    <article class="article" class="blog-post">
+      <div class="postmeta">
+        <span class="meta-post">
+  <i class="fa fa-calendar-alt"></i>Oct 26, 2020
+  
+</span>
+      </div>
+      <br>
+      
+    <p>Functions in JavaScript are special built-in objects. Because their purpose is to interact with web components, they have properties and usages that are unique and different from common programming languages like Java/C++. There are different ways of coding JavaScript functions.</p>
+<p>Let&rsquo;s start with something familiar though. Regular functions are declared with a <code>function</code> statement, and they are called by name like standard functions in other common languages . They are useful when you want to group lines of code that have a single responsibility.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">multiply</span>() {
+    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">result</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">4</span>
+    <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#34;3 multiplied by 4 is &#34;</span>, <span style="color:#a6e22e">result</span>)
+}
+<span style="color:#a6e22e">multiply</span>();
+</code></pre></div><pre><code>3 multiplied by 4 is  12
+</code></pre>
+<p>Functions can return objects. This second version of the multiply function returns the result of input paremeters a*b, which is then stored in myvar.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">multiply2</span>(<span style="color:#a6e22e">a</span>, <span style="color:#a6e22e">b</span>) {
+    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">a</span><span style="color:#f92672">*</span><span style="color:#a6e22e">b</span>
+}
+<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">myvar</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">multiply2</span>(<span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">6</span>)
+<span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#34;multipy2(5, 6) returns &#34;</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">myvar</span>)
+</code></pre></div><pre><code>multipy2(5, 6) returns 30
+</code></pre>
+<p><strong>Immediately Invoked Function Expressions</strong> run as soon as the browser comes across it during load. A common way to code these functions is to wrap with parenthesis, followed by ().</p>
+<p>Sometimes you will see a &ldquo;defensive semicolon&rdquo; infront of the immediately invoked function to guard against issues when concatentating two script sources together. This prevents issues when blindly concatenating two files. Since JavaScript doesn&rsquo;t require semicolons, you might concatenate with a file with some statements in its last line that causes a syntax error.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">x</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;This x is global and can be accessed in the function&#34;</span>;
+
+(<span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">p</span>) {
+    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">result</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">12</span> <span style="color:#f92672">/</span> <span style="color:#ae81ff">0.75</span>
+    <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#34;12 divided by 0.75 is &#34;</span>, <span style="color:#a6e22e">result</span>)
+    <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">p</span>)
+    <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">x</span>)
+})(<span style="color:#e6db74">&#34;This string is passed into function&#39;s p variable&#34;</span>)
+
+;(<span style="color:#66d9ef">function</span>() {
+    <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#34;This immediately invoked function has a defensive semicolon&#34;</span>)
+})()
+</code></pre></div><pre><code>12 divided by 0.75 is  16
+This string is passed into function's p variable
+This x is global and can be accessed in the function
+This immediately invoked function has a defensive semicolon
+</code></pre>
+<p><strong>Anonymous functions</strong> are created such that they have no canonical name, and so can&rsquo;t be invoked with a standardized function name, but they can be declared and stored into an object variable. The function is invoked by calling the variable as if it were the function&rsquo;s name.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">result</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">100</span>
+<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">divided</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">function</span>() {
+    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">result</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span> <span style="color:#f92672">/</span> <span style="color:#ae81ff">4</span>
+    <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#34;3 divided by 4 is &#34;</span>, <span style="color:#a6e22e">result</span>)
+    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">result</span>
+}
+<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">whatIsThis</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">divided</span>()
+<span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#34;the anonymous function&#39;s `result` variable is &#34;</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">whatIsThis</span>)
+</code></pre></div><pre><code>3 divided by 4 is  0.75
+the anonymous function's `result` variable is 0.75
+</code></pre>
+<h3 id="function-objects">Function objects</h3>
+<p>Every JavaScript function is actually a <code>Function</code> object. This can be seen by testing the constructor type</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript">(<span style="color:#66d9ef">function</span>(){}).<span style="color:#a6e22e">constructor</span> <span style="color:#f92672">===</span> Function
+</code></pre></div><pre><code>true
+</code></pre>
+<p>Function objects have a <code>name</code> property.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">foo</span>() {
+    <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#34;Guess what my name is...&#34;</span>);
+}
+
+<span style="color:#a6e22e">foo</span>()
+<span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">foo</span>.<span style="color:#a6e22e">name</span>)
+</code></pre></div><pre><code>Guess what my name is...
+foo
+</code></pre>
+<p>Anonymous function expressions that were created using the keyword function or arrow functions would have &quot;&quot; (an empty string) as their name.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-JavaScript" data-lang="JavaScript">(<span style="color:#66d9ef">function</span>() {}).<span style="color:#a6e22e">name</span>; <span style="color:#75715e">// &#34;&#34;
+</span><span style="color:#75715e"></span>(() =&gt; {}).<span style="color:#a6e22e">name</span>; <span style="color:#75715e">// &#34;&#34;
+</span></code></pre></div><pre><code>''
+</code></pre>
+<h3 id="closures-and-functions">Closures and functions</h3>
+<p>A <strong>closure</strong> is the combination of a function bundled together (enclosed) with references to its surrounding state (the lexical environment). In other words, a closure gives you access to an outer function’s scope from an inner function. In JavaScript, closures are created every time a function is created, <em>at function creation time</em>.</p>
+<p><strong>One common use for anonymous functions are creating closures&ndash;the function&rsquo;s environment consists of any local variables that were in-scope at the time the closure was created</strong>. In the example below, the function is working with local and contained in the scope of the function.</p>
+<p><code>createFunction1()</code> constructs a Function object (and returns the Function object). Functions created with the Function constructor do not create closures to their creation contexts; they always are created in the global scope. When running them, they will only be able to access their own local variables and global ones, not the ones from the scope in which the Function constructor was created.</p>
+<p>The <code>createFunction2()</code> function is an inner function <code>f()</code> that is defined inside init() and is available only within the body of the init() function. Note that the <code>f()</code> function has no local variables of its own. However, since inner functions have access to the variables of outer functions, <code>f()</code> can access the variable name declared in the parent function, <code>createFunction2()</code>.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">q</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">10</span>;
+
+<span style="color:#66d9ef">function</span> <span style="color:#a6e22e">createFunction1</span>() {
+    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">q</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">20</span>;
+    <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#34;Using Function constructor to create function won&#39;t know about local q in createFunction1...&#34;</span>);
+    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> Function(<span style="color:#e6db74">&#39;return q;&#39;</span>); <span style="color:#75715e">// this |q| will refer to global |q|
+</span><span style="color:#75715e"></span>}
+
+<span style="color:#66d9ef">function</span> <span style="color:#a6e22e">createFunction2</span>() {
+    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">q</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">20</span>;
+    <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#34;Declaring an inner function that has access to local q in createFunction2...&#34;</span>)
+    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">f</span>() {
+        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">q</span>; <span style="color:#75715e">// this |q| refers local |q| right above
+</span><span style="color:#75715e"></span>    }
+    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">f</span>;
+}
+
+<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">f1</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">createFunction1</span>();
+<span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">f1</span>());          <span style="color:#75715e">// prints global q=10
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">f2</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">createFunction2</span>();
+<span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">f2</span>());          <span style="color:#75715e">// prints local q=20
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">q</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">42</span>; <span style="color:#75715e">//update global q
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">f1</span>()); <span style="color:#75715e">// prints global q=42
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">f2</span>());    <span style="color:#75715e">// prints local q=20
+</span></code></pre></div><pre><code>Using Function constructor to create function won't know about local q in createFunction1...
+10
+Declaring an inner function that has access to local q in createFunction2...
+20
+42
+20
+</code></pre>
+<ul>
+<li>Read more about Functions at <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Mozilla Developer Docs</a></li>
+<li>Read more about Closures at <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures">Mozilla Developer Docs</a></li>
+</ul>
+
+
+      
+        <div class="blog-tags">
+          
+            <a href="https://bobbys-dev.github.io//tags/javascript/">JavaScript</a>&nbsp;
+          
+            <a href="https://bobbys-dev.github.io//tags/closure/">closure</a>&nbsp;
+          
+        </div>
+      
+    </article>
+    
+  </div>
+
+        </div><footer>
+  <div class="container">
+    <p class="credits copyright">
+      <p class="credits theme-by">
+         <a href="https://bobbys-dev.github.io/">blog home</a>&nbsp;|&nbsp;<a href="https://github.com/bobbys-dev">github</a>&nbsp;|&nbsp;<a href="https://bobbys-dev.github.io/about">bobbys</a>
+        &copy;
+        2020
+        <br>
+        Powered By <a href="https://gohugo.io">Hugo</a>&nbsp;/&nbsp;Theme&nbsp;<a href="https://github.com/7ma7X/HugoTeX">HugoTeX</a>
+      </p>
+  </div>
+</footer></body>
+</html>
