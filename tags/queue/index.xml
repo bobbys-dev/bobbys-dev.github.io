@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>queue on bobbys-dev blog</title>
+    <link>https://bobbys-dev.github.io/tags/queue/</link>
+    <description>Recent content in queue on bobbys-dev blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 28 Oct 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://bobbys-dev.github.io/tags/queue/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Quest of The Delta Knights ⚔</title>
+      <link>https://bobbys-dev.github.io/post/quest-of-the-delta-knights/</link>
+      <pubDate>Wed, 28 Oct 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://bobbys-dev.github.io/post/quest-of-the-delta-knights/</guid>
+      <description>&lt;h3 id=&#34;lord-vultare-has-stolen-archimedess-heat-ray-&#34;&gt;Lord Vultare has stolen Archimedes&amp;rsquo;s heat ray 🔥🔥&lt;/h3&gt;
+&lt;p&gt;&amp;hellip; and it&amp;rsquo;s up to Leonardo to take back the weapon before Lord Vultare uses it to seige the kingdom 🏟. Both Lord Vultare and Leonardo are still in the Phantom Zone, but Lord Vultare has already started making his way back to our world! The Phantom Zone has many intersecting dimensions and time streams, so Leonardo can&amp;rsquo;t &lt;em&gt;just&lt;/em&gt; run up to Lord Vultare because they are seperated by time and space. Luckily, Leonardo has the Antikythera that allows him to instantaneously travel through time  🕰 and space 🌌. He can catch up to Lord Vultare near-instantly, but he can only travel in a specific combination of &lt;strong&gt;dimensions&lt;/strong&gt; and time &lt;strong&gt;moments&lt;/strong&gt; relative to his current dimension and time. These moves are summarized as moving +/-3 dimensions and +/-1 moments, or, +/-1 dimensions and +/-3 moments.&lt;/p&gt;
+&lt;p&gt;The Phantom Zone has a finite number of dimensions and time frames though, given as &lt;code&gt;DIMENSIONS&lt;/code&gt; dimensions and &lt;code&gt;MOMENTS&lt;/code&gt; moments, and nobody can exist beyond those bounds. &lt;strong&gt;Given that Leonardo starts in the &lt;code&gt;d&lt;/code&gt; dimension and &lt;code&gt;m&lt;/code&gt; moment, and Lord Vultare is in &lt;code&gt;x&lt;/code&gt; dimension and &lt;code&gt;y&lt;/code&gt; moment, what is the minimum sequence of moves does he have to take to catch Lord Vultare?&lt;/strong&gt;&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

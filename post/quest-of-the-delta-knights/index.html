@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en-us"><meta charset="utf-8" />
+
+  <title>Quest of The Delta Knights ⚔ - bobbys-dev blog</title>
+
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="https://bobbys-dev.github.io/css/latex.css" />
+<link rel="stylesheet" href="https://bobbys-dev.github.io/css/main.css" />
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<meta name="generator" content="Hugo 0.75.1" /><body>
+
+
+
+
+
+
+<header>
+  <nav class="navbar">
+  <div class="nav">
+    
+
+    <ul class="nav-links">
+      
+    </ul>
+  </div>
+</nav>
+  <div class="intro-header">
+    <div class="container">
+      <div class="post-heading">
+        
+          <h1>Quest of The Delta Knights ⚔</h1>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+<div id="content">
+  <div class="container" role="main">
+    <article class="article" class="blog-post">
+      <div class="postmeta">
+        <span class="meta-post">
+  <i class="fa fa-calendar-alt"></i>Oct 28, 2020
+  
+</span>
+      </div>
+      <br>
+      
+    <h3 id="lord-vultare-has-stolen-archimedess-heat-ray-">Lord Vultare has stolen Archimedes&rsquo;s heat ray 🔥🔥</h3>
+<p>&hellip; and it&rsquo;s up to Leonardo to take back the weapon before Lord Vultare uses it to seige the kingdom 🏟. Both Lord Vultare and Leonardo are still in the Phantom Zone, but Lord Vultare has already started making his way back to our world! The Phantom Zone has many intersecting dimensions and time streams, so Leonardo can&rsquo;t <em>just</em> run up to Lord Vultare because they are seperated by time and space. Luckily, Leonardo has the Antikythera that allows him to instantaneously travel through time  🕰 and space 🌌. He can catch up to Lord Vultare near-instantly, but he can only travel in a specific combination of <strong>dimensions</strong> and time <strong>moments</strong> relative to his current dimension and time. These moves are summarized as moving +/-3 dimensions and +/-1 moments, or, +/-1 dimensions and +/-3 moments.</p>
+<p>The Phantom Zone has a finite number of dimensions and time frames though, given as <code>DIMENSIONS</code> dimensions and <code>MOMENTS</code> moments, and nobody can exist beyond those bounds. <strong>Given that Leonardo starts in the <code>d</code> dimension and <code>m</code> moment, and Lord Vultare is in <code>x</code> dimension and <code>y</code> moment, what is the minimum sequence of moves does he have to take to catch Lord Vultare?</strong></p>
+<p>Leonardo can move the following ways to get to Vultare:</p>
+<ul>
+<li>1 dimension forward and 3 moments after</li>
+<li>1 dimension forward and 3 moments before</li>
+<li>1 dimension backward and 3 moments after</li>
+<li>1 dimension backward and 3 moments before</li>
+<li>3 dimensions forward and 1 moment after</li>
+<li>3 dimensions forward and 1 moment before</li>
+<li>3 dimensions backward and 1 moment after</li>
+<li>3 dimensions backward and 1 moment before</li>
+</ul>
+<p>It&rsquo;s guaranteed that</p>
+<pre><code class="language-math" data-lang="math">12 &lt;= DIMENSIONS &lt;= 24
+12 &lt;= MOMENTS &lt;= 24
+
+0 &lt;= d &lt; DIMENSIONS
+0 &lt;= m &lt; MOMENTS
+
+0 &lt;= p &lt; DIMENSIONS
+0 &lt;= q &lt; MOMENTS
+</code></pre><p>The following functions generate the Phantom Zone and initial placement of Leonardo and his nemesis.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> random
+<span style="color:#f92672">import</span> numpy <span style="color:#f92672">as</span> np
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">phantom_zone</span>():
+    DIMENSIONS <span style="color:#f92672">=</span> random<span style="color:#f92672">.</span>randint(<span style="color:#ae81ff">12</span>,<span style="color:#ae81ff">24</span>)
+    MOMENTS <span style="color:#f92672">=</span> random<span style="color:#f92672">.</span>randint(<span style="color:#ae81ff">12</span>,<span style="color:#ae81ff">24</span>)
+    d <span style="color:#f92672">=</span> random<span style="color:#f92672">.</span>randint(<span style="color:#ae81ff">0</span>, DIMENSIONS<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)
+    m <span style="color:#f92672">=</span> random<span style="color:#f92672">.</span>randint(<span style="color:#ae81ff">0</span>, MOMENTS<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)
+    p <span style="color:#f92672">=</span> random<span style="color:#f92672">.</span>randint(<span style="color:#ae81ff">0</span>, DIMENSIONS<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)
+    q <span style="color:#f92672">=</span> random<span style="color:#f92672">.</span>randint(<span style="color:#ae81ff">0</span>, MOMENTS<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)
+    <span style="color:#66d9ef">return</span> (DIMENSIONS, MOMENTS, d, m, p, q)
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">in_zone</span>(d, m, D, M):
+    <span style="color:#66d9ef">return</span> d <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> m <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> d <span style="color:#f92672">&lt;</span> D <span style="color:#f92672">and</span> m <span style="color:#f92672">&lt;</span> M
+</code></pre></div><h3 id="approach">Approach</h3>
+<p>This first approach to consider is to preemptively explore possible moves. Think of it the Phantom Zone as a general 2-dimensional space. From the starting point, branch out and visit all reachable points. Leonardo also have to keep track of the number of move&rsquo;s he would have made up to those points. Then from those points, generate the next level of reachable points and account for the incremental move.</p>
+<p>A queue structure is good for this approach. We can enqueue into it each generation of reachable points, and since the order of the queue elements are &ldquo;first element in: first element out&rdquo;, we&rsquo;ll visit points in the general order of increasing levels.</p>
+<p>As a minor optimization, Leonardo will take moves that bring him toward Vultare in either dimenion or moment. He will enqueue any set of &ldquo;good moves&rdquo; based on relative position.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">forward_dimensions <span style="color:#f92672">=</span> [(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">3</span>), (<span style="color:#ae81ff">1</span>,<span style="color:#f92672">-</span><span style="color:#ae81ff">3</span>), (<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">1</span>), (<span style="color:#ae81ff">3</span>,<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)]
+forward_moments <span style="color:#f92672">=</span> [(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">3</span>), (<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">3</span>), (<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">1</span>), (<span style="color:#f92672">-</span><span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">1</span>)]
+backward_dimensions <span style="color:#f92672">=</span> [(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">3</span>), (<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>,<span style="color:#f92672">-</span><span style="color:#ae81ff">3</span>), (<span style="color:#f92672">-</span><span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">1</span>), (<span style="color:#f92672">-</span><span style="color:#ae81ff">3</span>,<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)]
+backward_moments <span style="color:#f92672">=</span> [(<span style="color:#ae81ff">1</span>,<span style="color:#f92672">-</span><span style="color:#ae81ff">3</span>), (<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>,<span style="color:#f92672">-</span><span style="color:#ae81ff">3</span>), (<span style="color:#ae81ff">3</span>,<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>), (<span style="color:#f92672">-</span><span style="color:#ae81ff">3</span>,<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)]
+all_moves <span style="color:#f92672">=</span> [(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">3</span>), (<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>,<span style="color:#f92672">-</span><span style="color:#ae81ff">3</span>), (<span style="color:#f92672">-</span><span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">1</span>), (<span style="color:#f92672">-</span><span style="color:#ae81ff">3</span>,<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>), (<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">3</span>), (<span style="color:#ae81ff">1</span>,<span style="color:#f92672">-</span><span style="color:#ae81ff">3</span>), (<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">1</span>), (<span style="color:#ae81ff">3</span>,<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)]
+</code></pre></div><p>Let&rsquo;s see how exploring <code>all_moves</code> does.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">random<span style="color:#f92672">.</span>seed(<span style="color:#ae81ff">1</span>)
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">do_it</span>():
+    DIMENSIONS, MOMENTS, d, m, p, q <span style="color:#f92672">=</span> phantom_zone()
+
+    moves <span style="color:#f92672">=</span> [] <span style="color:#75715e"># treat as queue</span>
+    visited <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array([[False]<span style="color:#f92672">*</span>MOMENTS]<span style="color:#f92672">*</span>DIMENSIONS)
+    count <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+    loops <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+    <span style="color:#66d9ef">while</span> loops <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">50000</span>:
+        <span style="color:#66d9ef">if</span> d<span style="color:#f92672">==</span>p <span style="color:#f92672">and</span> m<span style="color:#f92672">==</span>q:
+            <span style="color:#66d9ef">break</span>
+
+        <span style="color:#66d9ef">for</span> _d, _m <span style="color:#f92672">in</span> all_moves:
+            loops <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+            peek_d, peek_m <span style="color:#f92672">=</span> d <span style="color:#f92672">+</span> _d,  m <span style="color:#f92672">+</span> _m
+            <span style="color:#66d9ef">if</span> in_zone(peek_d, peek_m, DIMENSIONS, MOMENTS) <span style="color:#f92672">and</span> <span style="color:#f92672">not</span> visited[peek_d][peek_m]:
+                visited[peek_d][peek_m] <span style="color:#f92672">=</span> True
+                moves<span style="color:#f92672">.</span>append((peek_d, peek_m, count<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>))
+
+        <span style="color:#66d9ef">if</span> moves:
+            d, m <span style="color:#f92672">=</span> moves[<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">0</span>], moves[<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">1</span>]
+            count <span style="color:#f92672">=</span>  moves[<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">2</span>]
+            moves<span style="color:#f92672">.</span>pop(<span style="color:#ae81ff">0</span>)
+
+    <span style="color:#66d9ef">return</span> (DIMENSIONS, MOMENTS, d, m, p, q, loops, count)
+    
+(DIMENSIONS, MOMENTS, d, m, p, q, loops, count) <span style="color:#f92672">=</span> do_it()
+<span style="color:#66d9ef">print</span>(f<span style="color:#e6db74">&#34;DIMENSIONS: {DIMENSIONS}, MOMENTS: {MOMENTS}&#34;</span>)
+<span style="color:#66d9ef">print</span>(f<span style="color:#e6db74">&#34;Leonardo starts at dimension {d}, moment {m}&#34;</span>)
+<span style="color:#66d9ef">print</span>(f<span style="color:#e6db74">&#34;Vultare is at dimension {p} moment {q}&#34;</span>)
+<span style="color:#66d9ef">print</span>(f<span style="color:#e6db74">&#34;Leonardo explored {loops} possible moves and found he could take a minimum of {count} moves to reach Vultare.&#34;</span>)
+</code></pre></div><pre><code>DIMENSIONS: 14, MOMENTS: 21
+Leonardo starts at dimension 4, moment 3
+Vultare is at dimension 4 moment 3
+Leonardo explored 288 possible moves and found he could take a minimum of 3 moves to reach Vultare.
+</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">random<span style="color:#f92672">.</span>seed(<span style="color:#ae81ff">1</span>)
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">do_it_better</span>():
+    DIMENSIONS, MOMENTS, d, m, p, q <span style="color:#f92672">=</span> phantom_zone()
+
+    moves <span style="color:#f92672">=</span> [] <span style="color:#75715e"># treat as queue</span>
+    visited <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array([[False]<span style="color:#f92672">*</span>MOMENTS]<span style="color:#f92672">*</span>DIMENSIONS)
+    count <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+    loops <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+    <span style="color:#66d9ef">while</span> loops <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">50000</span>:
+        <span style="color:#66d9ef">if</span> d<span style="color:#f92672">==</span>p <span style="color:#f92672">and</span> m<span style="color:#f92672">==</span>q:
+            <span style="color:#66d9ef">break</span>
+
+        good_moves <span style="color:#f92672">=</span> []
+        <span style="color:#66d9ef">if</span> p <span style="color:#f92672">&gt;</span> d:
+            good_moves<span style="color:#f92672">.</span>extend(forward_dimensions)
+        <span style="color:#66d9ef">elif</span> p <span style="color:#f92672">&lt;</span> d :
+            good_moves<span style="color:#f92672">.</span>extend(backward_dimensions)
+
+        <span style="color:#66d9ef">if</span> q <span style="color:#f92672">&gt;</span> m:
+            good_moves<span style="color:#f92672">.</span>extend(forward_moments)
+        <span style="color:#66d9ef">elif</span> q <span style="color:#f92672">&lt;</span> m:
+            good_moves<span style="color:#f92672">.</span>extend(backward_moments)
+
+        <span style="color:#66d9ef">for</span> _d, _m <span style="color:#f92672">in</span> good_moves:
+            loops <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+            peek_d, peek_m <span style="color:#f92672">=</span> d <span style="color:#f92672">+</span> _d,  m <span style="color:#f92672">+</span> _m
+            <span style="color:#66d9ef">if</span> in_zone(peek_d, peek_m, DIMENSIONS, MOMENTS) <span style="color:#f92672">and</span> <span style="color:#f92672">not</span> visited[peek_d][peek_m]:
+                visited[peek_d][peek_m] <span style="color:#f92672">=</span> True
+                moves<span style="color:#f92672">.</span>append((peek_d, peek_m, count<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>))
+
+        <span style="color:#66d9ef">if</span> moves:
+            d, m <span style="color:#f92672">=</span> moves[<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">0</span>], moves[<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">1</span>]
+            count <span style="color:#f92672">=</span>  moves[<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">2</span>]
+            moves<span style="color:#f92672">.</span>pop(<span style="color:#ae81ff">0</span>)
+
+    <span style="color:#66d9ef">return</span> (DIMENSIONS, MOMENTS, d, m, p, q, loops, count)
+
+(DIMENSIONS, MOMENTS, d, m, p, q, loops, count)<span style="color:#f92672">=</span> do_it_better()
+<span style="color:#66d9ef">print</span>(f<span style="color:#e6db74">&#34;DIMENSIONS: {DIMENSIONS}, MOMENTS: {MOMENTS}&#34;</span>)
+<span style="color:#66d9ef">print</span>(f<span style="color:#e6db74">&#34;Leonardo starts at dimension {d}, moment {m}&#34;</span>)
+<span style="color:#66d9ef">print</span>(f<span style="color:#e6db74">&#34;Vultare is at dimension {p} moment {q}&#34;</span>)
+<span style="color:#66d9ef">print</span>(f<span style="color:#e6db74">&#34;Leonardo explored {loops} possible moves and found he could take a minimum of {count} moves to reach Vultare.&#34;</span>)
+
+</code></pre></div><pre><code>DIMENSIONS: 14, MOMENTS: 21
+Leonardo starts at dimension 4, moment 3
+Vultare is at dimension 4 moment 3
+Leonardo explored 196 possible moves and found he could take a minimum of 3 moves to reach Vultare.
+</code></pre>
+<h4 id="some-thoughts">Some thoughts&hellip;</h4>
+<p>Looks like selectively moving in the direction of the Vultare reduces the number of moves explored. Let&rsquo;s check across a few different scenarios where the Phantom Zone and people are arranged differently. I&rsquo;ll generate different results using different seeds.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">for</span> timeline <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">10</span>):
+    random<span style="color:#f92672">.</span>seed(timeline)
+    <span style="color:#66d9ef">print</span>(f<span style="color:#e6db74">&#34;timeline: {timeline}&#34;</span>)
+    result1 <span style="color:#f92672">=</span> do_it()
+    random<span style="color:#f92672">.</span>seed(timeline) <span style="color:#75715e"># make sure to reset simulation</span>
+    result2 <span style="color:#f92672">=</span> do_it_better()
+    <span style="color:#66d9ef">print</span>(f<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">{result1}</span><span style="color:#ae81ff">\n\t</span><span style="color:#e6db74">{result2}&#34;</span>)
+    <span style="color:#66d9ef">if</span> result1[<span style="color:#ae81ff">6</span>] <span style="color:#f92672">&gt;</span> result2[<span style="color:#ae81ff">6</span>]:
+        <span style="color:#66d9ef">print</span>(f<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">Did it better!&#34;</span>)
+</code></pre></div><pre><code>timeline: 0
+    (18, 24, 8, 16, 8, 16, 720, 5)
+    (18, 24, 8, 16, 8, 16, 620, 5)
+    Did it better!
+timeline: 1
+    (14, 21, 4, 3, 4, 3, 288, 3)
+    (14, 21, 4, 3, 4, 3, 196, 3)
+    Did it better!
+timeline: 2
+    (12, 13, 10, 0, 2, 11, 50000, 5)
+    (12, 13, 10, 0, 2, 11, 50004, 7)
+timeline: 3
+    (15, 21, 5, 19, 5, 19, 944, 5)
+    (15, 21, 5, 19, 5, 19, 740, 5)
+    Did it better!
+timeline: 4
+    (15, 16, 7, 4, 7, 4, 520, 4)
+    (15, 16, 7, 4, 7, 4, 432, 4)
+    Did it better!
+timeline: 5
+    (21, 16, 14, 7, 14, 7, 328, 3)
+    (21, 16, 14, 7, 14, 7, 196, 3)
+    Did it better!
+timeline: 6
+    (24, 21, 8, 1, 8, 1, 1248, 6)
+    (24, 21, 8, 1, 8, 1, 1172, 6)
+    Did it better!
+timeline: 7
+    (17, 14, 1, 1, 1, 1, 904, 5)
+    (17, 14, 1, 1, 1, 1, 804, 5)
+    Did it better!
+timeline: 8
+    (15, 17, 3, 1, 3, 1, 368, 3)
+    (15, 17, 3, 1, 3, 1, 200, 3)
+    Did it better!
+timeline: 9
+    (19, 21, 4, 5, 4, 5, 576, 3)
+    (19, 21, 4, 5, 4, 5, 324, 3)
+    Did it better!
+</code></pre>
+<h3 id="better-mostly">Better, mostly</h3>
+<p>So, 9 of 10 timelines played out where the optimized search did a fewer number of move searches (looks like approximately 100 moves less average).</p>
+<p>In timeline 2, the players and zone configuration was such that the limit of 50000 iterations was reached at some point, and the first approach gave the lower number of moves.</p>
+<h4 id="improvements">Improvements?</h4>
+<p>The search was essentially a breadth first search with some backtracking. What other heuristics could Leonardo use to cut off a branch path that is not worth exploring (ie he is searching too deep down a path)?🌌</p>
+
+
+      
+        <div class="blog-tags">
+          
+            <a href="https://bobbys-dev.github.io//tags/bfs/">BFS</a>&nbsp;
+          
+            <a href="https://bobbys-dev.github.io//tags/queue/">queue</a>&nbsp;
+          
+        </div>
+      
+    </article>
+    
+  </div>
+
+        </div><footer>
+  <div class="container">
+    <p class="credits copyright">
+      <p class="credits theme-by">
+         <a href="https://bobbys-dev.github.io/">blog home</a>&nbsp;|&nbsp;<a href="https://github.com/bobbys-dev">github</a>&nbsp;|&nbsp;<a href="https://bobbys-dev.github.io/about">bobbys</a>
+        &copy;
+        2020
+        <br>
+        Powered By <a href="https://gohugo.io">Hugo</a>&nbsp;/&nbsp;Theme&nbsp;<a href="https://github.com/7ma7X/HugoTeX">HugoTeX</a>
+      </p>
+  </div>
+</footer></body>
+</html>
