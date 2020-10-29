@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en-us"><meta charset="utf-8" />
+
+  <title>Amazon delivery trucks 🚚 - bobbys-dev blog</title>
+
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="https://bobbys-dev.github.io/css/latex.css" />
+<link rel="stylesheet" href="https://bobbys-dev.github.io/css/main.css" />
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<meta name="generator" content="Hugo 0.75.1" /><body>
+
+
+
+
+
+
+<header>
+  <nav class="navbar">
+  <div class="nav">
+    
+
+    <ul class="nav-links">
+      
+    </ul>
+  </div>
+</nav>
+  <div class="intro-header">
+    <div class="container">
+      <div class="post-heading">
+        
+          <h1>Amazon delivery trucks 🚚</h1>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+<div id="content">
+  <div class="container" role="main">
+    <article class="article" class="blog-post">
+      <div class="postmeta">
+        <span class="meta-post">
+  <i class="fa fa-calendar-alt"></i>Oct 29, 2020
+  
+</span>
+      </div>
+      <br>
+      
+    <h3 id="scenario">Scenario</h3>
+<p>Amazon Prime Now has 17-hour long days during which it deploys its fleet of trucks. The Order Forecaster for a region is really good at what they do and can give the exact number of trucks needed during each hour block for the coming day. The forecast schedule is in the form of a 17 element array. We can only deploy (add) trucks at the very beginning of the day, and any leftover trucks at the end of the day are automatically sent to maintenance. *<strong>How would we algorithmically maintain a minimal service fleet?</strong> For example if the required number of trucks is forecasted as:</p>
+<table>
+<thead>
+<tr>
+<th>0</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+<th>6</th>
+<th>7</th>
+<th>8</th>
+<th>9</th>
+<th>10</th>
+<th>11</th>
+<th>12</th>
+<th>13</th>
+<th>14</th>
+<th>15</th>
+<th>16</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>5</td>
+<td>5</td>
+<td>5</td>
+<td>5</td>
+<td>5</td>
+<td>5</td>
+<td>5</td>
+<td>3</td>
+<td>4</td>
+<td>4</td>
+<td>3</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p>The optimal decommissioning schedule is:</p>
+<table>
+<thead>
+<tr>
+<th>0</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+<th>6</th>
+<th>7</th>
+<th>8</th>
+<th>9</th>
+<th>10</th>
+<th>11</th>
+<th>12</th>
+<th>13</th>
+<th>14</th>
+<th>15</th>
+<th>16</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>5</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>-1</td>
+<td>0</td>
+<td>0</td>
+<td>-1</td>
+<td>-2</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p>Our job is to deploy trucks and coordinate with maintenance to decommission trucks that are not needed for the rest of the day. Once a truck is decommisioned, it won&rsquo;t be available until the next day starts. Given the forecaster&rsquo;s schedule, we need to keep a minimal number of trucks in service to fulfill the rest of the day&rsquo;s deliveries, but send back (subtract) any trucks to maintainence as soon as we can. We&rsquo;ll come up with our own scheduling telling them how many trucks to decommission at the start of each hour.</p>
+<p>We start off by adding 5 trucks into delivery. Observe that while we need only 3 trucks during the 7th hour,  we&rsquo;ll need 4 in the 8th hour. So we can remove only 1 truck at the 7th hour to keep at least 4 trucks in service for hours 8 and 9. For the 10th hour, we can decommision 1 truck, leaving 3 to make deliveries. In the next hour we remove 1 truck, leaving the final truck required to make rest of the day&rsquo;s deliveries.</p>
+<h3 id="approach">Approach</h3>
+<p>We have many different regions to manage and can really give each forecast only one pass through to come up with the precise corresponding deployment/decommisioning schedule. We can do this by reading forecast backwards: at very end of the day where demand is 0 (all deliveries are done), then iterating from the last hour of the day and reading each previous hours one by one to the beginning of the day. Keeping track of the highest demand so far, look at each hour, and subtract the current demand from the highest, if we get a negative value, then that is the number to decomission in the hour+1, if highest minus current hour&rsquo;s demand is positive, then we don&rsquo;t decommission any trucks because we know they&rsquo;ll still be in use in the future. Update the highest demand by taking the max of (current hour&rsquo;s demand vs. highest demand). Then continue through the iteration. The very first hour is finally set to the highest demand.</p>
+<h3 id="analysis">Analysis</h3>
+<p>The time to do this scanning approach is linearly proportional (O(n)) to the number of hours in a day (e.g. 17). An alternative that will take O(n^2) is iterate over the forecast list starting at the beginning, then at each hour, iterate over the rest of the list again to find the max and deciding whether to keep the fleet count same or if it&rsquo;s ok to decomission as much as needed to maintain the current max.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> random
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">forecast</span>():
+    <span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">17</span>):
+        <span style="color:#66d9ef">yield</span> random<span style="color:#f92672">.</span>randint(<span style="color:#ae81ff">5</span>,<span style="color:#ae81ff">20</span>)
+</code></pre></div><p>Let&rsquo;s check the forecast.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">random<span style="color:#f92672">.</span>seed(<span style="color:#ae81ff">6449</span>)
+<span style="color:#66d9ef">print</span>(list(forecast()))
+</code></pre></div><pre><code>[19, 20, 17, 14, 6, 6, 13, 7, 20, 8, 17, 7, 10, 15, 11, 10, 5]
+</code></pre>
+<p>Now that we have the forecast, let&rsquo;s do it!</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">random<span style="color:#f92672">.</span>seed(<span style="color:#ae81ff">6449</span>)
+most <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>
+
+<span style="color:#75715e"># Get the entire days demand&#39;s</span>
+demands <span style="color:#f92672">=</span> list(forecast())
+<span style="color:#66d9ef">print</span>(f<span style="color:#e6db74">&#34;Entire day&#39;s demands:</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">{demands}&#34;</span>)
+
+<span style="color:#75715e"># We&#39;ll build the decomissioning list from the day&#39;s end and adding each earlier hour back to the beginning of the day</span>
+decomissions <span style="color:#f92672">=</span> []
+i <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>
+end <span style="color:#f92672">=</span> <span style="color:#f92672">-</span>len(demands)
+most <span style="color:#f92672">=</span> max(demands[i], most)
+<span style="color:#66d9ef">while</span> (i <span style="color:#f92672">&gt;</span> end):
+    i <span style="color:#f92672">-=</span> <span style="color:#ae81ff">1</span>
+    decomissions<span style="color:#f92672">.</span>insert(<span style="color:#ae81ff">0</span>, min(most <span style="color:#f92672">-</span> demands[i], <span style="color:#ae81ff">0</span>))
+    most <span style="color:#f92672">=</span> max(demands[i], most)
+
+<span style="color:#75715e"># Finally, add the number of trucks we&#39;ll start the day off with</span>
+decomissions<span style="color:#f92672">.</span>insert(<span style="color:#ae81ff">0</span>, most)
+<span style="color:#66d9ef">print</span>(f<span style="color:#e6db74">&#34;Service list:</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">{decomissions}&#34;</span>)
+</code></pre></div><pre><code>Entire day's demands:
+[19, 20, 17, 14, 6, 6, 13, 7, 20, 8, 17, 7, 10, 15, 11, 10, 5]
+Service list:
+[20, 0, 0, 0, 0, 0, 0, 0, 0, -3, 0, -2, 0, 0, -4, -1, -5]
+</code></pre>
+<p>And to verify this approach gives the desired optimal schedule, I check against the orignal example forecast</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># Get the entire days demand&#39;s</span>
+demands <span style="color:#f92672">=</span> [<span style="color:#ae81ff">5</span>,<span style="color:#ae81ff">5</span>,<span style="color:#ae81ff">5</span>,<span style="color:#ae81ff">5</span>,<span style="color:#ae81ff">5</span>,<span style="color:#ae81ff">5</span>,<span style="color:#ae81ff">5</span>,<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">4</span>,<span style="color:#ae81ff">4</span>,<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">1</span>]
+most <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>
+<span style="color:#66d9ef">print</span>(f<span style="color:#e6db74">&#34;Example entire day&#39;s demands:</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">{demands}&#34;</span>)
+
+<span style="color:#75715e"># We&#39;ll build the decomissioning list from the day&#39;s end and adding each earlier hour back to the beginning of the day</span>
+decomissions <span style="color:#f92672">=</span> []
+i <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>
+end <span style="color:#f92672">=</span> <span style="color:#f92672">-</span>len(demands)
+most <span style="color:#f92672">=</span> max(demands[i], most)
+<span style="color:#66d9ef">while</span> (i <span style="color:#f92672">&gt;</span> end):
+    i <span style="color:#f92672">-=</span> <span style="color:#ae81ff">1</span>
+    decomissions<span style="color:#f92672">.</span>insert(<span style="color:#ae81ff">0</span>, min(most <span style="color:#f92672">-</span> demands[i], <span style="color:#ae81ff">0</span>))
+    most <span style="color:#f92672">=</span> max(demands[i], most)
+
+<span style="color:#75715e"># Finally, add the number of trucks we&#39;ll start the day off with</span>
+decomissions<span style="color:#f92672">.</span>insert(<span style="color:#ae81ff">0</span>, most)
+<span style="color:#66d9ef">print</span>(f<span style="color:#e6db74">&#34;Service list:</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">{decomissions}&#34;</span>)
+</code></pre></div><pre><code>Example entire day's demands:
+[5, 5, 5, 5, 5, 5, 5, 3, 4, 4, 3, 1, 0, 0, 0, 0, 1]
+Service list:
+[5, 0, 0, 0, 0, 0, 0, -1, 0, 0, -1, -2, 0, 0, 0, 0, 0]
+</code></pre>
+<h3 id="what-ifs">What ifs&hellip;</h3>
+<ul>
+<li>
+<p>Forecast lists had variable length because the time resolutions are different? The service list length would have to change accordingly.</p>
+</li>
+<li>
+<p>We had 24 hour rolling forecasts, updated with each new hour? The service fleet may have to have be more conservative in decommisioning and have some extra reserve trucks to &ldquo;cushion&rdquo; demand in case the last downstream demand increases.</p>
+</li>
+<li>
+<p>Maintenance speed improves and we can put trucks back into service after 2 hours? There would be another function to deposit trucks back into service simultaneously with how many would have been decommissioned.</p>
+</li>
+</ul>
+<p>🐱‍👤</p>
+
+
+      
+        <div class="blog-tags">
+          
+            <a href="https://bobbys-dev.github.io//tags/dynamic-programming/">dynamic programming</a>&nbsp;
+          
+        </div>
+      
+    </article>
+    
+  </div>
+
+        </div><footer>
+  <div class="container">
+    <p class="credits copyright">
+      <p class="credits theme-by">
+         <a href="https://bobbys-dev.github.io/">blog home</a>&nbsp;|&nbsp;<a href="https://github.com/bobbys-dev">github</a>&nbsp;|&nbsp;<a href="https://bobbys-dev.github.io/about">bobbys</a>
+        &copy;
+        2020
+        <br>
+        Powered By <a href="https://gohugo.io">Hugo</a>&nbsp;/&nbsp;Theme&nbsp;<a href="https://github.com/7ma7X/HugoTeX">HugoTeX</a>
+      </p>
+  </div>
+</footer></body>
+</html>
