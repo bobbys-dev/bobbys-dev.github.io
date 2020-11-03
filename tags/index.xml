@@ -6,7 +6,43 @@
     <description>Recent content in Tags on bobbys-dev blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 29 Oct 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://bobbys-dev.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 03 Nov 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://bobbys-dev.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Cloudflare</title>
+      <link>https://bobbys-dev.github.io/tags/cloudflare/</link>
+      <pubDate>Tue, 03 Nov 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://bobbys-dev.github.io/tags/cloudflare/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Cloudflare Workers</title>
+      <link>https://bobbys-dev.github.io/tags/cloudflare-workers/</link>
+      <pubDate>Tue, 03 Nov 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://bobbys-dev.github.io/tags/cloudflare-workers/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>full stack development</title>
+      <link>https://bobbys-dev.github.io/tags/full-stack-development/</link>
+      <pubDate>Tue, 03 Nov 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://bobbys-dev.github.io/tags/full-stack-development/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>serverless</title>
+      <link>https://bobbys-dev.github.io/tags/serverless/</link>
+      <pubDate>Tue, 03 Nov 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://bobbys-dev.github.io/tags/serverless/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>dynamic programming</title>
       <link>https://bobbys-dev.github.io/tags/dynamic-programming/</link>
@@ -89,47 +125,11 @@
     </item>
     
     <item>
-      <title>Cloudflare</title>
-      <link>https://bobbys-dev.github.io/tags/cloudflare/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://bobbys-dev.github.io/tags/cloudflare/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Cloudflare Workers</title>
-      <link>https://bobbys-dev.github.io/tags/cloudflare-workers/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://bobbys-dev.github.io/tags/cloudflare-workers/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>full stack development</title>
-      <link>https://bobbys-dev.github.io/tags/full-stack-development/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://bobbys-dev.github.io/tags/full-stack-development/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>index</title>
       <link>https://bobbys-dev.github.io/tags/index/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://bobbys-dev.github.io/tags/index/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>serverless</title>
-      <link>https://bobbys-dev.github.io/tags/serverless/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://bobbys-dev.github.io/tags/serverless/</guid>
       <description></description>
     </item>
     

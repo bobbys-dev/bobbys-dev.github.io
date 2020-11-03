@@ -6,7 +6,16 @@
     <description>Recent content on bobbys-dev blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 29 Oct 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://bobbys-dev.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 03 Nov 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://bobbys-dev.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Serverless dev with Cloudflare Workers</title>
+      <link>https://bobbys-dev.github.io/post/serverless-dev-with-cloudflare-workers/</link>
+      <pubDate>Tue, 03 Nov 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://bobbys-dev.github.io/post/serverless-dev-with-cloudflare-workers/</guid>
+      <description>I recently learned of a neat Cloudflare tool to that lets developers deploy &amp;ldquo;serverless code&amp;rdquo;: Cloudflare Workers. It approximates AWS Lambda in being a compute instance that lives in closer to the edge of the users&#39; site, and it&amp;rsquo;s fast at doing what it does. &amp;ldquo;Just deploy code&amp;rdquo; in your choice of language: Javascript, Rust, Python, C/C++&amp;hellip; and you don&amp;rsquo;t have to be mindful or worry about unused capacity, auto-scaling, or load balancing.</description>
+    </item>
+    
     <item>
       <title>Amazon delivery trucks 🚚</title>
       <link>https://bobbys-dev.github.io/post/amazon-delivery-trucks/</link>
@@ -204,15 +213,6 @@ The input is a string of n numbers and the output is a number counting all the p
       
       <guid>https://bobbys-dev.github.io/post/hello-world/</guid>
       <description>&lt;p&gt;This blog lets you know what I&amp;rsquo;m up to. Start at the &lt;a href=&#34;../../../about&#34;&gt;About&lt;/a&gt; for a summary about me.&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>Serverless dev with Cloudflare Workers</title>
-      <link>https://bobbys-dev.github.io/post/serverless-dev-with-cloudflare-workers/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://bobbys-dev.github.io/post/serverless-dev-with-cloudflare-workers/</guid>
-      <description>I recently learned of a neat Cloudflare tool to that lets developers deploy &amp;ldquo;serverless code&amp;rdquo;: Cloudflare Workers. It approximates AWS Lambda in being a compute instance that lives in closer to the edge of the users&#39; site, and it&amp;rsquo;s fast at doing what it does. &amp;ldquo;Just deploy code&amp;rdquo; in your choice of language: Javascript, Rust, Python, C/C++&amp;hellip; and you don&amp;rsquo;t have to be mindful or worry about unused capacity, auto-scaling, or load balancing.</description>
     </item>
     
   </channel>
