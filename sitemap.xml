@@ -147,7 +147,31 @@
   </url>
   
   <url>
+    <loc>https://bobbys-dev.github.io/tags/cloudflare/</loc>
+  </url>
+  
+  <url>
+    <loc>https://bobbys-dev.github.io/tags/cloudflare-workers/</loc>
+  </url>
+  
+  <url>
+    <loc>https://bobbys-dev.github.io/tags/full-stack-development/</loc>
+  </url>
+  
+  <url>
     <loc>https://bobbys-dev.github.io/tags/index/</loc>
+  </url>
+  
+  <url>
+    <loc>https://bobbys-dev.github.io/tags/serverless/</loc>
+  </url>
+  
+  <url>
+    <loc>https://bobbys-dev.github.io/post/serverless-dev-with-cloudflare-workers/</loc>
+  </url>
+  
+  <url>
+    <loc>https://bobbys-dev.github.io/series/web-development/</loc>
   </url>
   
 </urlset>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en-us"><meta charset="utf-8" />
+
+  <title>Serverless dev with Cloudflare Workers - bobbys-dev blog</title>
+
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="https://bobbys-dev.github.io/css/latex.css" />
+<link rel="stylesheet" href="https://bobbys-dev.github.io/css/main.css" />
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<meta name="generator" content="Hugo 0.75.1" /><body>
+
+
+
+
+
+
+<header>
+  <nav class="navbar">
+  <div class="nav">
+    
+
+    <ul class="nav-links">
+      
+    </ul>
+  </div>
+</nav>
+  <div class="intro-header">
+    <div class="container">
+      <div class="post-heading">
+        
+          <h1>Serverless dev with Cloudflare Workers</h1>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+<div id="content">
+  <div class="container" role="main">
+    <article class="article" class="blog-post">
+      <div class="postmeta">
+        <span class="meta-post">
+  <i class="fa fa-calendar-alt"></i>Jan 1, 0001
+  
+</span>
+      </div>
+      <br>
+      
+    <p>I recently learned of a neat Cloudflare tool to that lets developers deploy &ldquo;serverless code&rdquo;: <a href="https://workers.cloudflare.com/">Cloudflare Workers</a>. It approximates AWS Lambda in being a compute instance that lives in closer to the edge of the users' site, and it&rsquo;s fast at doing what it does. &ldquo;Just deploy code&rdquo; in your choice of language: Javascript, Rust, Python, C/C++&hellip; and you don&rsquo;t have to be mindful or worry about unused capacity, auto-scaling, or load balancing. A use case is localizing content to the language of the region where it&rsquo;s being accessed (i.e. translating a webpage into the user&rsquo;s language). To give further context, the alternatives would be 1) server side rendinger: the content to be translated somewhere on the server where the data lives, or, 2) on the other extreme, the user has installed a extension on their browser that intercepts and translates everything.</p>
+<p>Cloudflare Workers has other utilities as a tool for full stack, serverless development, and I spent some time building an <a href="https://my-project.sbsrisan.workers.dev/">example here</a>. What it does is transform a boilerplate template with my personalized profile. In the very near future I&rsquo;ll show code and flow of how Workers does things.</p>
+<p>In the meanwhile, Ashley Williams has a talk about the motivation behind serverless development. Watch at least through the pizza example 🍕 <a href="http://www.youtube.com/watch?v=MBndZddVQdw" title="Journey to the edge"><img src="http://img.youtube.com/vi/MBndZddVQdw/0.jpg" alt="JavaScript&rsquo;s Journey to the Edge"></a></p>
+
+
+
+      
+        <div class="blog-tags">
+          
+            <a href="https://bobbys-dev.github.io//tags/full-stack-development/">full stack development</a>&nbsp;
+          
+            <a href="https://bobbys-dev.github.io//tags/serverless/">serverless</a>&nbsp;
+          
+            <a href="https://bobbys-dev.github.io//tags/cloudflare/">Cloudflare</a>&nbsp;
+          
+            <a href="https://bobbys-dev.github.io//tags/cloudflare-workers/">Cloudflare Workers</a>&nbsp;
+          
+        </div>
+      
+    </article>
+    
+  </div>
+
+        </div><footer>
+  <div class="container">
+    <p class="credits copyright">
+      <p class="credits theme-by">
+         <a href="https://bobbys-dev.github.io/">blog home</a>&nbsp;|&nbsp;<a href="https://github.com/bobbys-dev">github</a>&nbsp;|&nbsp;<a href="https://bobbys-dev.github.io/about">bobbys</a>
+        &copy;
+        2020
+        <br>
+        Powered By <a href="https://gohugo.io">Hugo</a>&nbsp;/&nbsp;Theme&nbsp;<a href="https://github.com/7ma7X/HugoTeX">HugoTeX</a>
+      </p>
+  </div>
+</footer></body>
+</html>
