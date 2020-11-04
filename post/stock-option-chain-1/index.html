@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en-us"><meta charset="utf-8" />
+
+  <title>EDA on stock option chains - bobbys-dev blog</title>
+
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="https://bobbys-dev.github.io/css/latex.css" />
+<link rel="stylesheet" href="https://bobbys-dev.github.io/css/main.css" />
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<meta name="generator" content="Hugo 0.75.1" /><body>
+
+
+
+
+
+
+<header>
+  <nav class="navbar">
+  <div class="nav">
+    
+
+    <ul class="nav-links">
+      
+    </ul>
+  </div>
+</nav>
+  <div class="intro-header">
+    <div class="container">
+      <div class="post-heading">
+        
+          <h1>EDA on stock option chains</h1>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+<div id="content">
+  <div class="container" role="main">
+    <article class="article" class="blog-post">
+      <div class="postmeta">
+        <span class="meta-post">
+  <i class="fa fa-calendar-alt"></i>Nov 4, 2020
+  
+</span>
+      </div>
+      <br>
+      
+    <p>I was curious about the bid-ask spread and behavior of contract prices for stock <a href="https://www.investopedia.com/options-basics-tutorial-4583012">options</a>.</p>
+<p>In this notebook I&rsquo;ll explore a dataset, figure out what data preprations I&rsquo;ll need, and make basic visualizations to try to support some hypothesis. Along the way I&rsquo;ll also touch on basics of stock options.</p>
+<p>If you want to repeat with your data, note the pandas and numpy version in case you run into errors.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> os
+<span style="color:#f92672">import</span> pandas <span style="color:#f92672">as</span> pd
+<span style="color:#f92672">from</span> matplotlib <span style="color:#f92672">import</span> pyplot <span style="color:#66d9ef">as</span> plt
+<span style="color:#f92672">import</span> numpy <span style="color:#f92672">as</span> np
+<span style="color:#f92672">import</span> seaborn <span style="color:#f92672">as</span> sns
+<span style="color:#f92672">%</span>matplotlib inline
+plt<span style="color:#f92672">.</span>style<span style="color:#f92672">.</span>use(<span style="color:#e6db74">&#39;tableau-colorblind10&#39;</span>)
+<span style="color:#66d9ef">print</span>(f<span style="color:#e6db74">&#34;pandas version {pd.__version__}&#34;</span>)
+<span style="color:#66d9ef">print</span>(f<span style="color:#e6db74">&#34;numpy version {np.__version__}&#34;</span>)
+</code></pre></div><pre><code>pandas version 1.1.3
+numpy version 1.19.2
+</code></pre>
+<p>For a few expirations dates in the near future, I exported Apple Inc. (NASDAQ: AAPL) stock option chains into csv files. The prices are a snapshot at the time of this exploration. I first try to open and view one dataframe and decide whether it and other datasets need cleaning.</p>
+<p>Note I use indicate that the read_csv function that a comma is just a semantic indicator as a <a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html?highlight=read_csv#pandas.read_csv">thousands place</a>.</p>
+<p>The next two cells shows information about the AAPL options data as well as a few records. Doing this will let me know what next steps I may need to take in exploration.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">df <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>join(os<span style="color:#f92672">.</span>getcwd(), <span style="color:#e6db74">&#39;data&#39;</span>, <span style="color:#e6db74">&#39;AAPL&#39;</span>,  <span style="color:#e6db74">&#39;oct-30.csv&#39;</span>), thousands<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;,&#39;</span>)
+df<span style="color:#f92672">.</span>info()
+</code></pre></div><pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
+RangeIndex: 78 entries, 0 to 77
+Data columns (total 17 columns):
+ #   Column        Non-Null Count  Dtype  
+---  ------        --------------  -----  
+ 0   Trade         77 non-null     object 
+ 1   Quote         77 non-null     object 
+ 2   Open          78 non-null     object 
+ 3   Volume        77 non-null     float64
+ 4   Net Change    77 non-null     float64
+ 5   Last          77 non-null     float64
+ 6   Bid           77 non-null     float64
+ 7   Ask           77 non-null     float64
+ 8   Strike        78 non-null     object 
+ 9   Bid.1         77 non-null     float64
+ 10  Ask.1         77 non-null     float64
+ 11  Last.1        77 non-null     float64
+ 12  Net Change.1  77 non-null     float64
+ 13  Volume.1      77 non-null     float64
+ 14  Open.1        78 non-null     object 
+ 15  Quote.1       77 non-null     object 
+ 16  Trade.1       77 non-null     object 
+dtypes: float64(10), object(7)
+memory usage: 10.5+ KB
+</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">print</span>(df<span style="color:#f92672">.</span>head(<span style="color:#ae81ff">3</span>))
+</code></pre></div><pre><code>   Trade    Quote      Open  Volume  Net Change   Last    Bid    Ask Strike  \
+0    NaN      NaN  Interest     NaN         NaN    NaN    NaN    NaN  Price   
+1  Trade  Details        98     5.0        1.97  61.02  61.25  61.85     55   
+2  Trade  Details       263   121.0        1.50  56.35  56.50  56.65     60   
+
+   Bid.1  Ask.1  Last.1  Net Change.1  Volume.1    Open.1  Quote.1 Trade.1  
+0    NaN    NaN     NaN           NaN       NaN  Interest      NaN     NaN  
+1    0.0   0.01    0.01           0.0       3.0        35  Details   Trade  
+2    0.0   0.01    0.03           0.0       0.0        31  Details   Trade  
+</code></pre>
+<h2 id="clean-up-required">Clean up required&hellip;</h2>
+<p>Since I scraped and pasted data from a browser into a csv, there are some browser artifacts I&rsquo;ll need to take care of that are specific to the way I scrapped the data, namely, row index 0 is probably the result of a table formatting in the browser view, and the Trade and Quote columns are UI elements for the user to click onto the trading page. I&rsquo;ll need to <a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.drop.html">drop those rows and columns</a>.</p>
+<p><em>Note in the following cells, I create seperate functions because I&rsquo;m going to demonstrate a data wrangling pipeline with the functions.</em></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">prep_rows</span>(df, row_indices):
+    <span style="color:#75715e"># Just dropping row</span>
+    df<span style="color:#f92672">.</span>drop(index<span style="color:#f92672">=</span>row_indices)
+    <span style="color:#66d9ef">return</span> df<span style="color:#f92672">.</span>drop(index<span style="color:#f92672">=</span>row_indices)
+
+<span style="color:#75715e"># drop (row) index 0</span>
+df <span style="color:#f92672">=</span> prep_rows(df, [<span style="color:#ae81ff">0</span>])
+df<span style="color:#f92672">.</span>reset_index(inplace<span style="color:#f92672">=</span>True, drop<span style="color:#f92672">=</span>True)
+<span style="color:#66d9ef">print</span>(df<span style="color:#f92672">.</span>head(<span style="color:#ae81ff">3</span>))
+</code></pre></div><pre><code>   Trade    Quote Open  Volume  Net Change   Last    Bid    Ask Strike  Bid.1  \
+0  Trade  Details   98     5.0        1.97  61.02  61.25  61.85     55    0.0   
+1  Trade  Details  263   121.0        1.50  56.35  56.50  56.65     60    0.0   
+2  Trade  Details   17     1.0        2.85  51.95  51.50  51.70     65    0.0   
+
+   Ask.1  Last.1  Net Change.1  Volume.1 Open.1  Quote.1 Trade.1  
+0   0.01    0.01           0.0       3.0     35  Details   Trade  
+1   0.01    0.03           0.0       0.0     31  Details   Trade  
+2   0.01    0.01           0.0       0.0     36  Details   Trade  
+</code></pre>
+<p>The dataframe needs a <a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.to_datetime.html">date</a> column to indicate expiration date of the contract. Also, the table is organized at call options on the left and put options on the right, so I&rsquo;ll <a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.rename.html">rename</a> all the columns to indicate put or call.</p>
+<p>I use some other expressions and structures:</p>
+<ul>
+<li><a href="https://book.pythontips.com/en/latest/lambdas.html">lambda functions</a> aka anonymous functions to map the column label as a put or call based on whether it has a &lsquo;.1&rsquo;</li>
+<li>in the lambda function, I do a <code>value_if_true if condition else value_if_false</code> aka the <a href="https://book.pythontips.com/en/latest/ternary_operators.html">ternary operator</a></li>
+<li>to save a little space, the columns holding integers are converting to integers using <a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.astype.html">astype</a>. Commas are removed from strings before conversion. This would have been taken care of when the CSV was read, but the empty row causes some interpretation snags.</li>
+<li><a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Timestamp.date.html?highlight=date#pandas.Timestamp.date">datetime type</a> to write only the date portion of the datetime data type</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">prep_columns</span>(df, drop_cols, map_cols, date_label):
+    <span style="color:#75715e"># drop unused columns</span>
+    df<span style="color:#f92672">.</span>drop(columns<span style="color:#f92672">=</span>drop_cols, inplace<span style="color:#f92672">=</span>True)
+    
+    <span style="color:#75715e"># add call or put</span>
+    df<span style="color:#f92672">.</span>rename(columns<span style="color:#f92672">=</span>map_cols, inplace<span style="color:#f92672">=</span>True)
+    
+    <span style="color:#75715e"># convert everything to numbers</span>
+    df<span style="color:#f92672">.</span>replace(<span style="color:#e6db74">&#39;,&#39;</span>,<span style="color:#e6db74">&#39;&#39;</span>, regex<span style="color:#f92672">=</span>True, inplace<span style="color:#f92672">=</span>True)
+    
+    df <span style="color:#f92672">=</span> df<span style="color:#f92672">.</span>astype(float)
+    
+    df[<span style="color:#e6db74">&#39;call spread&#39;</span>] <span style="color:#f92672">=</span> df[<span style="color:#e6db74">&#39;ask call&#39;</span>] <span style="color:#f92672">-</span> df[<span style="color:#e6db74">&#39;bid call&#39;</span>]
+    df[<span style="color:#e6db74">&#39;put spread&#39;</span>] <span style="color:#f92672">=</span> df[<span style="color:#e6db74">&#39;ask put&#39;</span>] <span style="color:#f92672">-</span> df[<span style="color:#e6db74">&#39;bid put&#39;</span>]
+    
+    <span style="color:#75715e"># add date</span>
+    df[<span style="color:#e6db74">&#39;expire date&#39;</span>] <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>to_datetime(date_label <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;-2020&#34;</span>)<span style="color:#f92672">.</span>date()
+    <span style="color:#66d9ef">return</span> df
+
+drop_cols <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;Trade&#39;</span>, <span style="color:#e6db74">&#39;Quote&#39;</span>, <span style="color:#e6db74">&#39;Quote.1&#39;</span>, <span style="color:#e6db74">&#39;Trade.1&#39;</span>]
+map_cols <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#39;Open&#39;</span>: <span style="color:#e6db74">&#39;open interest put&#39;</span>,
+     <span style="color:#e6db74">&#39;Volume&#39;</span>: <span style="color:#e6db74">&#39;volume call&#39;</span>,
+     <span style="color:#e6db74">&#39;Net Change&#39;</span>: <span style="color:#e6db74">&#39;net change call&#39;</span>,
+     <span style="color:#e6db74">&#39;Last&#39;</span>: <span style="color:#e6db74">&#39;last call&#39;</span>,
+     <span style="color:#e6db74">&#39;Bid&#39;</span>: <span style="color:#e6db74">&#39;bid call&#39;</span>,
+     <span style="color:#e6db74">&#39;Ask&#39;</span>: <span style="color:#e6db74">&#39;ask call&#39;</span>,
+     <span style="color:#e6db74">&#39;Strike&#39;</span>: <span style="color:#e6db74">&#39;strike&#39;</span>,
+     <span style="color:#e6db74">&#39;Volume.1&#39;</span>: <span style="color:#e6db74">&#39;volume put&#39;</span>,
+     <span style="color:#e6db74">&#39;Net Change.1&#39;</span>: <span style="color:#e6db74">&#39;net change put&#39;</span>,
+     <span style="color:#e6db74">&#39;Last.1&#39;</span>: <span style="color:#e6db74">&#39;last call&#39;</span>,
+     <span style="color:#e6db74">&#39;Bid.1&#39;</span>: <span style="color:#e6db74">&#39;bid put&#39;</span>,
+     <span style="color:#e6db74">&#39;Ask.1&#39;</span>: <span style="color:#e6db74">&#39;ask put&#39;</span>,
+     <span style="color:#e6db74">&#39;Open.1&#39;</span>: <span style="color:#e6db74">&#39;open interest put&#39;</span>,
+}
+df <span style="color:#f92672">=</span> prep_columns(df, drop_cols, map_cols, <span style="color:#e6db74">&#39;oct-30&#39;</span>)
+df<span style="color:#f92672">.</span>head(<span style="color:#ae81ff">3</span>)
+df<span style="color:#f92672">.</span>info()
+</code></pre></div><pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
+RangeIndex: 77 entries, 0 to 76
+Data columns (total 16 columns):
+ #   Column             Non-Null Count  Dtype  
+---  ------             --------------  -----  
+ 0   open interest put  77 non-null     float64
+ 1   volume call        77 non-null     float64
+ 2   net change call    77 non-null     float64
+ 3   last call          77 non-null     float64
+ 4   bid call           77 non-null     float64
+ 5   ask call           77 non-null     float64
+ 6   strike             77 non-null     float64
+ 7   bid put            77 non-null     float64
+ 8   ask put            77 non-null     float64
+ 9   last call          77 non-null     float64
+ 10  net change put     77 non-null     float64
+ 11  volume put         77 non-null     float64
+ 12  open interest put  77 non-null     float64
+ 13  call spread        77 non-null     float64
+ 14  put spread         77 non-null     float64
+ 15  expire date        77 non-null     object 
+dtypes: float64(15), object(1)
+memory usage: 9.8+ KB
+</code></pre>
+<h3 id="cleanup-pipeline">Cleanup pipeline</h3>
+<p>Now I create a <a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.pipe.html">pipeline</a> to so that I can iterate over a list of csv dataset and apply the same functions over each set and append it to the dataframe.</p>
+<p>I know the files I&rsquo;ve created ahead of time so I used those to load the csv&rsquo;s, transform the data, and <a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.append.html">append</a> onto the main dataframe. The end result should have 514 rows (again, I counted ahead of time).</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">dates <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#34;nov-6&#34;</span>, <span style="color:#e6db74">&#34;nov-13&#34;</span>, <span style="color:#e6db74">&#34;nov-20&#34;</span>, <span style="color:#e6db74">&#34;nov-27&#34;</span>, <span style="color:#e6db74">&#34;dec-4&#34;</span>, <span style="color:#e6db74">&#34;dec-18&#34;</span>]
+
+<span style="color:#66d9ef">for</span> date <span style="color:#f92672">in</span> dates:
+    df2 <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>join(os<span style="color:#f92672">.</span>getcwd(), <span style="color:#e6db74">&#39;data&#39;</span>, <span style="color:#e6db74">&#39;AAPL&#39;</span>, date<span style="color:#f92672">+</span><span style="color:#e6db74">&#39;.csv&#39;</span>), thousands<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;,&#39;</span>)
+    df2 <span style="color:#f92672">=</span> df2<span style="color:#f92672">.</span>pipe(prep_rows, [<span style="color:#ae81ff">0</span>])\
+        <span style="color:#f92672">.</span>pipe(prep_columns, drop_cols<span style="color:#f92672">=</span>drop_cols, map_cols<span style="color:#f92672">=</span>map_cols, date_label<span style="color:#f92672">=</span>date)
+    df <span style="color:#f92672">=</span> df<span style="color:#f92672">.</span>append(df2, ignore_index<span style="color:#f92672">=</span>True)
+    <span style="color:#66d9ef">print</span>(len(df))
+    
+df<span style="color:#f92672">.</span>info()
+</code></pre></div><pre><code>135
+187
+341
+393
+438
+514
+&lt;class 'pandas.core.frame.DataFrame'&gt;
+RangeIndex: 514 entries, 0 to 513
+Data columns (total 16 columns):
+ #   Column             Non-Null Count  Dtype  
+---  ------             --------------  -----  
+ 0   open interest put  514 non-null    float64
+ 1   volume call        514 non-null    float64
+ 2   net change call    514 non-null    float64
+ 3   last call          514 non-null    float64
+ 4   bid call           514 non-null    float64
+ 5   ask call           514 non-null    float64
+ 6   strike             514 non-null    float64
+ 7   bid put            514 non-null    float64
+ 8   ask put            514 non-null    float64
+ 9   last call          514 non-null    float64
+ 10  net change put     514 non-null    float64
+ 11  volume put         514 non-null    float64
+ 12  open interest put  514 non-null    float64
+ 13  call spread        514 non-null    float64
+ 14  put spread         514 non-null    float64
+ 15  expire date        514 non-null    object 
+dtypes: float64(15), object(1)
+memory usage: 64.4+ KB
+</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">print</span>(df<span style="color:#f92672">.</span>head(<span style="color:#ae81ff">3</span>))
+</code></pre></div><pre><code>   open interest put  volume call  net change call  last call  bid call  \
+0               98.0          5.0             1.97      61.02     61.25   
+1              263.0        121.0             1.50      56.35     56.50   
+2               17.0          1.0             2.85      51.95     51.50   
+
+   ask call  strike  bid put  ask put  last call  net change put  volume put  \
+0     61.85    55.0      0.0     0.01       0.01             0.0         3.0   
+1     56.65    60.0      0.0     0.01       0.03             0.0         0.0   
+2     51.70    65.0      0.0     0.01       0.01             0.0         0.0   
+
+   open interest put  call spread  put spread expire date  
+0               35.0         0.60        0.01  2020-10-30  
+1               31.0         0.15        0.01  2020-10-30  
+2               36.0         0.20        0.01  2020-10-30 
+</code></pre>
+<h3 id="heading">🚩</h3>
+<p>Ok, I&rsquo;ve done a lot of data manipulation. I graph some things to see if there are any obvious patterns.</p>
+<p>I&rsquo;ll go ahead and plot the strike prices vs the prices of bid calls and puts. Ignore trying to distinguish between ask and bid right now&hellip; I don&rsquo;t expect that they&rsquo;ll be too different than what bid call (or put) vs strike price look like.</p>
+<p>In general, <strong>call options</strong> reflect the <em>value</em> of being able to <em>buy</em> a stock <em>at a given strike price of the contract and at the present price of the stock</em>. Conversely, <strong>put options</strong> reflect the <em>value</em> of being able to <em>sell</em> a stock <em>at a given strike price of the contract and at the present price of the stock</em>.</p>
+<ul>
+<li>
+<p>For calls, it&rsquo;s better to have the choice to buy a stock at a lower price than the actual stock price. You can take advantage of buying at a &ldquo;discounted&rdquo; price.</p>
+</li>
+<li>
+<p>For puts, it&rsquo;s better to have the choice to sell a stock at a higher price than the actual stock price. You can take advantage of selling at an &ldquo;marked up&rdquo; price.</p>
+</li>
+</ul>
+<p>I&rsquo;ll explain more about those dynamics in the following cells, but first, observe the &ldquo;hockey stick&rdquo; shape of the prices. Observe they are mirrors of one another.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">df<span style="color:#f92672">.</span>pivot(index<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;strike&#39;</span>, columns<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;expire date&#39;</span>, values<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;bid call&#39;</span>)<span style="color:#f92672">.</span>plot(marker<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;.&#39;</span>, ls<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;&#39;</span>)
+plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#34;Strike price&#34;</span>)
+plt<span style="color:#f92672">.</span>ylabel(<span style="color:#e6db74">&#34;Call price (bid)&#34;</span>)
+plt<span style="color:#f92672">.</span>show()
+</code></pre></div><p><img src="/output_13_0.png" alt="png"></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">df<span style="color:#f92672">.</span>pivot(index<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;strike&#39;</span>, columns<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;expire date&#39;</span>, values<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;bid put&#39;</span>)<span style="color:#f92672">.</span>plot(marker<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;.&#39;</span>, ls<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;&#39;</span>)
+plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#34;Strike price&#34;</span>)
+plt<span style="color:#f92672">.</span>ylabel(<span style="color:#e6db74">&#34;Put price (bid)&#34;</span>)
+plt<span style="color:#f92672">.</span>show()
+</code></pre></div><p><img src="/output_14_0.png" alt="png"></p>
+<h3 id="the-ins-and-outs-of-options">The ins-and-outs of options</h3>
+<p>Since these numbers are a snapshot of values at a specific point in time i.e. a stock price, we can make some statements that corrorate with reality.</p>
+<ul>
+<li>
+<p>Even though I haven&rsquo;t mentioned the actual stock price, you&rsquo;d have a fair chance betting that it is somewhere around 120 - 130 dollars if you understand that&hellip;</p>
+</li>
+<li>
+<p>For calls, there&rsquo;s more intrinsic value in being able to buy at prices lower than the actual stock price, or&hellip;</p>
+</li>
+<li>
+<p>For puts, there&rsquo;s more intrinsic value in being able to sell at prices higher than the actual stock price&hellip;</p>
+</li>
+<li>
+<p>Passed the actual stock price, there is no intrinsic value in being able to buy the stock at a higher price (for calls). Would you choose to buy a pizza pie at 20 dollars if its advertised price is 15 dollars? The same is true but in the opposite price direction for puts. Would you choose to sell a your boat at 100k if buyers were willing to buy boats at 500k?&hellip;</p>
+</li>
+<li>
+<p>Thus, the options' market prices closely track intrinsic values (because no one wants to obvious leave money on the table). The higher the intrinsic value an option, the higher it&rsquo;s going to be priced at. You can still try to take advantage of the price differential, but the so-call optimization of the market will adjust prices such that you can&rsquo;t exactly buy a 1 dollar call for a 1001 dollar stock and make 1000 dollars off of it (and vice versa for puts). Passed the actual stock price, the values drop to zero.</p>
+</li>
+</ul>
+<h2 id="-now-onto-heavier-stuff">🥽 Now onto heavier stuff</h2>
+<p><em>Out of all extropolations, the statements above are &ldquo;low hanging fruit&rdquo; observations, but I wanted to anchor the data in reality so that I can make more a ambitious explorations.</em></p>
+<p>I have a few hypotheses:</p>
+<p>The bid-ask spread of options is correlated with value, and the farther away the strike price, the wider the spread, because there&rsquo;s less consensus/certainty of the actual stock value reaching the far strike price.</p>
+<p>The bid-ask spread of options is correlated with stock volatility. Again, uncertainty causes less consensus in valuation.</p>
+<p>So by these hypotheses, a highly volatile stock will have the widest spread at prices far away from the acual stock price.</p>
+<p>I know I want to include a graph of the bid-ask spread over strike the domain of strike prices, so I&rsquo;ll plot strike vs spread for different expiry dates. I&rsquo;m interested in finding a relationship between strike price and bid ask spread.</p>
+<p>Visualization: I use a scatter plot on the spreads for each expiry date. I connect the datapoints so it&rsquo;s easier to identify which datapoint belongs to which date, but the lines aren&rsquo;t data interpolation. The disjoint points are a result of limited figure space, and they otherwise should be connected.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">df<span style="color:#f92672">.</span>pivot(index<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;strike&#39;</span>, columns<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;expire date&#39;</span>, values<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;call spread&#39;</span>)<span style="color:#f92672">.</span>plot(marker<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;.&#39;</span>)
+plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#34;AAPL call options spread&#34;</span>)
+plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#34;Strike price&#34;</span>)
+plt<span style="color:#f92672">.</span>ylabel(<span style="color:#e6db74">&#34;Call spread&#34;</span>)
+plt<span style="color:#f92672">.</span>show()
+</code></pre></div><p><img src="/output_16_0.png" alt="png"></p>
+<p>Looks like there&rsquo;s a trend in the above graph, but it looks a little choppy 🤔. This is because of the values of the prices. Option prices tend to stick to intervals of 0.1.</p>
+<p>I&rsquo;ll now bring in more data from AMD (AMD) and Johnson &amp; Johnson (JNJ) to try and glean a pattern across stocks.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">df_AAPL <span style="color:#f92672">=</span> df
+dates <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#34;nov-6&#34;</span>, <span style="color:#e6db74">&#34;nov-13&#34;</span>, <span style="color:#e6db74">&#34;nov-20&#34;</span>, <span style="color:#e6db74">&#34;nov-27&#34;</span>, <span style="color:#e6db74">&#34;dec-4&#34;</span>, <span style="color:#e6db74">&#34;dec-11&#34;</span>, <span style="color:#e6db74">&#34;dec-18&#34;</span>]
+
+df_AMD <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>DataFrame()
+<span style="color:#66d9ef">for</span> date <span style="color:#f92672">in</span> dates:
+    df2 <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>join(os<span style="color:#f92672">.</span>getcwd(), <span style="color:#e6db74">&#39;data&#39;</span>, <span style="color:#e6db74">&#39;AMD&#39;</span>, date<span style="color:#f92672">+</span><span style="color:#e6db74">&#39;.csv&#39;</span>), thousands<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;,&#39;</span>)
+    df2 <span style="color:#f92672">=</span> df2<span style="color:#f92672">.</span>pipe(prep_rows, [<span style="color:#ae81ff">0</span>])\
+        <span style="color:#f92672">.</span>pipe(prep_columns, drop_cols<span style="color:#f92672">=</span>drop_cols, map_cols<span style="color:#f92672">=</span>map_cols, date_label<span style="color:#f92672">=</span>date)
+    df_AMD <span style="color:#f92672">=</span> df_AMD<span style="color:#f92672">.</span>append(df2, ignore_index<span style="color:#f92672">=</span>True)
+<span style="color:#66d9ef">print</span>(df_AMD<span style="color:#f92672">.</span>info())
+
+df_JNJ <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>DataFrame()
+<span style="color:#66d9ef">for</span> date <span style="color:#f92672">in</span> dates:
+    df2 <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>join(os<span style="color:#f92672">.</span>getcwd(), <span style="color:#e6db74">&#39;data&#39;</span>, <span style="color:#e6db74">&#39;JNJ&#39;</span>, date<span style="color:#f92672">+</span><span style="color:#e6db74">&#39;.csv&#39;</span>), thousands<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;,&#39;</span>)
+    df2 <span style="color:#f92672">=</span> df2<span style="color:#f92672">.</span>pipe(prep_rows, [<span style="color:#ae81ff">0</span>])\
+        <span style="color:#f92672">.</span>pipe(prep_columns, drop_cols<span style="color:#f92672">=</span>drop_cols, map_cols<span style="color:#f92672">=</span>map_cols, date_label<span style="color:#f92672">=</span>date)
+    df_JNJ <span style="color:#f92672">=</span> df_JNJ<span style="color:#f92672">.</span>append(df2, ignore_index<span style="color:#f92672">=</span>True)
+<span style="color:#66d9ef">print</span>(df_AMD<span style="color:#f92672">.</span>info())
+</code></pre></div><pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
+RangeIndex: 402 entries, 0 to 401
+Data columns (total 16 columns):
+ #   Column             Non-Null Count  Dtype  
+---  ------             --------------  -----  
+ 0   open interest put  402 non-null    float64
+ 1   volume call        402 non-null    float64
+ 2   net change call    402 non-null    float64
+ 3   last call          402 non-null    float64
+ 4   bid call           402 non-null    float64
+ 5   ask call           402 non-null    float64
+ 6   strike             402 non-null    float64
+ 7   bid put            402 non-null    float64
+ 8   ask put            402 non-null    float64
+ 9   last call          402 non-null    float64
+ 10  net change put     402 non-null    float64
+ 11  volume put         402 non-null    float64
+ 12  open interest put  402 non-null    float64
+ 13  call spread        402 non-null    float64
+ 14  put spread         402 non-null    float64
+ 15  expire date        402 non-null    object 
+dtypes: float64(15), object(1)
+memory usage: 50.4+ KB
+None
+&lt;class 'pandas.core.frame.DataFrame'&gt;
+RangeIndex: 402 entries, 0 to 401
+Data columns (total 16 columns):
+ #   Column             Non-Null Count  Dtype  
+---  ------             --------------  -----  
+ 0   open interest put  402 non-null    float64
+ 1   volume call        402 non-null    float64
+ 2   net change call    402 non-null    float64
+ 3   last call          402 non-null    float64
+ 4   bid call           402 non-null    float64
+ 5   ask call           402 non-null    float64
+ 6   strike             402 non-null    float64
+ 7   bid put            402 non-null    float64
+ 8   ask put            402 non-null    float64
+ 9   last call          402 non-null    float64
+ 10  net change put     402 non-null    float64
+ 11  volume put         402 non-null    float64
+ 12  open interest put  402 non-null    float64
+ 13  call spread        402 non-null    float64
+ 14  put spread         402 non-null    float64
+ 15  expire date        402 non-null    object 
+dtypes: float64(15), object(1)
+memory usage: 50.4+ KB
+None
+</code></pre>
+<p>Create a dataframe for snapshot of the stocks.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">df_stock <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>DataFrame({<span style="color:#e6db74">&#39;symbol&#39;</span>: [<span style="color:#e6db74">&#39;AAPL&#39;</span>, <span style="color:#e6db74">&#39;AMD&#39;</span>, <span style="color:#e6db74">&#39;JNJ&#39;</span>],
+                         <span style="color:#e6db74">&#39;last price&#39;</span>: [<span style="color:#e6db74">&#39;116.60&#39;</span>, <span style="color:#e6db74">&#39;76.58&#39;</span>,<span style="color:#e6db74">&#39;138.50&#39;</span>],
+                         <span style="color:#e6db74">&#39;volatility&#39;</span>: [<span style="color:#e6db74">&#39;38.15&#39;</span>, <span style="color:#e6db74">&#39;50.06&#39;</span>, <span style="color:#e6db74">&#39;24.22&#39;</span>]})
+<span style="color:#66d9ef">print</span>(df_stock<span style="color:#f92672">.</span>head(<span style="color:#ae81ff">3</span>))
+</code></pre></div><pre><code>  symbol last price volatility
+0   AAPL     116.60      38.15
+1    AMD      76.58      50.06
+2    JNJ     138.50      24.22
+</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">df_AMD<span style="color:#f92672">.</span>pivot(index<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;strike&#39;</span>, columns<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;expire date&#39;</span>, values<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;call spread&#39;</span>)<span style="color:#f92672">.</span>plot(marker<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;.&#39;</span>)
+plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#34;AMD options spread&#34;</span>)
+plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#34;Strike price&#34;</span>)
+plt<span style="color:#f92672">.</span>ylabel(<span style="color:#e6db74">&#34;Call spread&#34;</span>)
+plt<span style="color:#f92672">.</span>show()
+</code></pre></div><p><img src="/output_21_0.png" alt="png"></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">df_JNJ<span style="color:#f92672">.</span>pivot(index<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;strike&#39;</span>, columns<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;expire date&#39;</span>, values<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;call spread&#39;</span>)<span style="color:#f92672">.</span>plot(marker<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;.&#39;</span>)
+plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#34;JNJ options spread&#34;</span>)
+plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#34;Strike price&#34;</span>)
+plt<span style="color:#f92672">.</span>ylabel(<span style="color:#e6db74">&#34;Call spread&#34;</span>)
+plt<span style="color:#f92672">.</span>show()
+</code></pre></div><p><img src="/output_22_0.png" alt="png"></p>
+<h3 id="findings-">Findings 🔎</h3>
+<p>Observe that while AMD spread has more variance, there&rsquo;s narrowing tendency as the contracts are specified closer to the current price. The trend is clearer for JNJ stock. This supports my hypothesis that options farther away from strike price have wider spread. I can&rsquo;t reject that there isn&rsquo;t a correlation yet, though.</p>
+<p>My other hypothesis was about volatility correlating with spread. What it looks like so far is that volatility influences spread such that it varies just as much even as the contract price nears the actual price.</p>
+<p>Just for kicks I&rsquo;ll do a linear regression for JNJ at a specific expiry date and show that the trend line fitted to call data slopes down as we close in on the actual price.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> scipy.stats <span style="color:#f92672">as</span> sp
+
+sub <span style="color:#f92672">=</span> df_JNJ[df_JNJ[<span style="color:#e6db74">&#39;expire date&#39;</span>] <span style="color:#f92672">==</span> pd<span style="color:#f92672">.</span>to_datetime(<span style="color:#e6db74">&#34;11-06-2020&#34;</span>)<span style="color:#f92672">.</span>date()]
+y<span style="color:#f92672">=</span>np<span style="color:#f92672">.</span>array(sub[<span style="color:#e6db74">&#39;call spread&#39;</span>]<span style="color:#f92672">.</span>values, dtype<span style="color:#f92672">=</span>float)
+x<span style="color:#f92672">=</span>np<span style="color:#f92672">.</span>array(sub[<span style="color:#e6db74">&#39;strike&#39;</span>]<span style="color:#f92672">.</span>values, dtype<span style="color:#f92672">=</span>float)
+slope, intercept, r_value, p_value, std_err <span style="color:#f92672">=</span> sp<span style="color:#f92672">.</span>linregress(x, y)
+
+xf <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>linspace(min(x), max(x), <span style="color:#ae81ff">100</span>)
+yf <span style="color:#f92672">=</span> (slope<span style="color:#f92672">*</span>xf)<span style="color:#f92672">+</span>intercept
+
+_, ax <span style="color:#f92672">=</span> plt<span style="color:#f92672">.</span>subplots(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>)
+ax<span style="color:#f92672">.</span>plot(xf, yf,label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;Linear fit&#39;</span>, lw<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>)
+sub<span style="color:#f92672">.</span>plot(x<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;strike&#39;</span>, y<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;call spread&#39;</span>, ax<span style="color:#f92672">=</span>ax, marker<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;o&#39;</span>, ls<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;&#39;</span>)
+ax<span style="color:#f92672">.</span>legend()
+plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#34;Linear regression on call&#34;</span>)
+plt<span style="color:#f92672">.</span>show()
+</code></pre></div><p><img src="/output_25_0.png" alt="png"></p>
+<h3 id="stay-tuned">Stay tuned</h3>
+<p>In the next post continuation, I plan to make more insights and visualizations.</p>
+<ul>
+<li>I have time-series data, so I&rsquo;ll need to explore its affect on spread.</li>
+<li>The call and put data generally have symmetry in their rules, but are there any assymetrical differences I can uncover in the data?</li>
+</ul>
+
+
+      
+        <div class="blog-tags">
+          
+            <a href="https://bobbys-dev.github.io//tags/exploratory-data-analysis/">exploratory data analysis</a>&nbsp;
+          
+            <a href="https://bobbys-dev.github.io//tags/data-wrangling/">data wrangling</a>&nbsp;
+          
+            <a href="https://bobbys-dev.github.io//tags/visualization/">visualization</a>&nbsp;
+          
+            <a href="https://bobbys-dev.github.io//tags/linear-regression/">linear regression</a>&nbsp;
+          
+        </div>
+      
+    </article>
+    
+  </div>
+
+        </div><footer>
+  <div class="container">
+    <p class="credits copyright">
+      <p class="credits theme-by">
+         <a href="https://bobbys-dev.github.io/">blog home</a>&nbsp;|&nbsp;<a href="https://github.com/bobbys-dev">github</a>&nbsp;|&nbsp;<a href="https://bobbys-dev.github.io/about">bobbys</a>
+        &copy;
+        2020
+        <br>
+        Powered By <a href="https://gohugo.io">Hugo</a>&nbsp;/&nbsp;Theme&nbsp;<a href="https://github.com/7ma7X/HugoTeX">HugoTeX</a>
+      </p>
+  </div>
+</footer></body>
+</html>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>data analysis on stock market data on bobbys-dev blog</title>
+    <link>https://bobbys-dev.github.io/series/data-analysis-on-stock-market-data/</link>
+    <description>Recent content in data analysis on stock market data on bobbys-dev blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 04 Nov 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://bobbys-dev.github.io/series/data-analysis-on-stock-market-data/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>EDA on stock option chains</title>
+      <link>https://bobbys-dev.github.io/post/stock-option-chain-1/</link>
+      <pubDate>Wed, 04 Nov 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://bobbys-dev.github.io/post/stock-option-chain-1/</guid>
+      <description>&lt;p&gt;I was curious about the bid-ask spread and behavior of contract prices for stock &lt;a href=&#34;https://www.investopedia.com/options-basics-tutorial-4583012&#34;&gt;options&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;In this notebook I&amp;rsquo;ll explore a dataset, figure out what data preprations I&amp;rsquo;ll need, and make basic visualizations to try to support some hypothesis. Along the way I&amp;rsquo;ll also touch on basics of stock options.&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

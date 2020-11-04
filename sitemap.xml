@@ -4,7 +4,52 @@
   
   <url>
     <loc>https://bobbys-dev.github.io/</loc>
-    <lastmod>2020-11-03T00:00:00+00:00</lastmod>
+    <lastmod>2020-11-04T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://bobbys-dev.github.io/series/data-analysis-on-stock-market-data/</loc>
+    <lastmod>2020-11-04T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://bobbys-dev.github.io/tags/data-wrangling/</loc>
+    <lastmod>2020-11-04T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://bobbys-dev.github.io/post/stock-option-chain-1/</loc>
+    <lastmod>2020-11-04T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://bobbys-dev.github.io/tags/exploratory-data-analysis/</loc>
+    <lastmod>2020-11-04T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://bobbys-dev.github.io/tags/linear-regression/</loc>
+    <lastmod>2020-11-04T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://bobbys-dev.github.io/post/</loc>
+    <lastmod>2020-11-04T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://bobbys-dev.github.io/series/</loc>
+    <lastmod>2020-11-04T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://bobbys-dev.github.io/tags/</loc>
+    <lastmod>2020-11-04T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://bobbys-dev.github.io/tags/visualization/</loc>
+    <lastmod>2020-11-04T00:00:00+00:00</lastmod>
   </url>
   
   <url>
@@ -23,27 +68,12 @@
   </url>
   
   <url>
-    <loc>https://bobbys-dev.github.io/post/</loc>
-    <lastmod>2020-11-03T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://bobbys-dev.github.io/series/</loc>
-    <lastmod>2020-11-03T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://bobbys-dev.github.io/tags/serverless/</loc>
     <lastmod>2020-11-03T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://bobbys-dev.github.io/post/serverless-dev-with-cloudflare-workers/</loc>
-    <lastmod>2020-11-03T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://bobbys-dev.github.io/tags/</loc>
     <lastmod>2020-11-03T00:00:00+00:00</lastmod>
   </url>
   
@@ -173,11 +203,15 @@
   </url>
   
   <url>
+    <loc>https://bobbys-dev.github.io/index.html</loc>
+  </url>
+  
+  <url>
     <loc>https://bobbys-dev.github.io/categories/</loc>
   </url>
   
   <url>
-    <loc>https://bobbys-dev.github.io/tags/index/</loc>
+    <loc>https://bobbys-dev.github.io/post/</loc>
   </url>
   
 </urlset>

@@ -6,7 +6,43 @@
     <description>Recent content in Tags on bobbys-dev blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 03 Nov 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://bobbys-dev.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 04 Nov 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://bobbys-dev.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>data wrangling</title>
+      <link>https://bobbys-dev.github.io/tags/data-wrangling/</link>
+      <pubDate>Wed, 04 Nov 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://bobbys-dev.github.io/tags/data-wrangling/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>exploratory data analysis</title>
+      <link>https://bobbys-dev.github.io/tags/exploratory-data-analysis/</link>
+      <pubDate>Wed, 04 Nov 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://bobbys-dev.github.io/tags/exploratory-data-analysis/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>linear regression</title>
+      <link>https://bobbys-dev.github.io/tags/linear-regression/</link>
+      <pubDate>Wed, 04 Nov 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://bobbys-dev.github.io/tags/linear-regression/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>visualization</title>
+      <link>https://bobbys-dev.github.io/tags/visualization/</link>
+      <pubDate>Wed, 04 Nov 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://bobbys-dev.github.io/tags/visualization/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>Cloudflare</title>
       <link>https://bobbys-dev.github.io/tags/cloudflare/</link>
@@ -121,15 +157,6 @@
       <pubDate>Fri, 09 Oct 2020 00:00:00 +0000</pubDate>
       
       <guid>https://bobbys-dev.github.io/tags/pandas/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>index</title>
-      <link>https://bobbys-dev.github.io/tags/index/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://bobbys-dev.github.io/tags/index/</guid>
       <description></description>
     </item>
     
