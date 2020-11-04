@@ -64,7 +64,7 @@ plt<span style="color:#f92672">.</span>style<span style="color:#f92672">.</span>
 numpy version 1.19.2
 </code></pre>
 <p>For a few expirations dates in the near future, I exported Apple Inc. (NASDAQ: AAPL) stock option chains into csv files. The prices are a snapshot at the time of this exploration. I first try to open and view one dataframe and decide whether it and other datasets need cleaning.</p>
-<p>Note I use indicate that the read_csv function that a comma is just a semantic indicator as a <a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html?highlight=read_csv#pandas.read_csv">thousands place</a>.</p>
+<p>Note I pass to the read_csv function a comma for semantic indicator of the <a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html?highlight=read_csv#pandas.read_csv">thousands place</a>.</p>
 <p>The next two cells shows information about the AAPL options data as well as a few records. Doing this will let me know what next steps I may need to take in exploration.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">df <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>join(os<span style="color:#f92672">.</span>getcwd(), <span style="color:#e6db74">&#39;data&#39;</span>, <span style="color:#e6db74">&#39;AAPL&#39;</span>,  <span style="color:#e6db74">&#39;oct-30.csv&#39;</span>), thousands<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;,&#39;</span>)
 df<span style="color:#f92672">.</span>info()
@@ -131,7 +131,7 @@ df<span style="color:#f92672">.</span>reset_index(inplace<span style="color:#f92
 <ul>
 <li><a href="https://book.pythontips.com/en/latest/lambdas.html">lambda functions</a> aka anonymous functions to map the column label as a put or call based on whether it has a &lsquo;.1&rsquo;</li>
 <li>in the lambda function, I do a <code>value_if_true if condition else value_if_false</code> aka the <a href="https://book.pythontips.com/en/latest/ternary_operators.html">ternary operator</a></li>
-<li>to save a little space, the columns holding integers are converting to integers using <a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.astype.html">astype</a>. Commas are removed from strings before conversion. This would have been taken care of when the CSV was read, but the empty row causes some interpretation snags.</li>
+<li>to save a little space, the columns holding integers are convert to integers using <a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.astype.html">astype</a>. Commas are removed from strings before conversion. This would have been taken care of when the CSV was read, but the empty row causes some interpretation snags.</li>
 <li><a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Timestamp.date.html?highlight=date#pandas.Timestamp.date">datetime type</a> to write only the date portion of the datetime data type</li>
 </ul>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">prep_columns</span>(df, drop_cols, map_cols, date_label):
@@ -169,7 +169,6 @@ map_cols <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#39;
      <span style="color:#e6db74">&#39;Open.1&#39;</span>: <span style="color:#e6db74">&#39;open interest put&#39;</span>,
 }
 df <span style="color:#f92672">=</span> prep_columns(df, drop_cols, map_cols, <span style="color:#e6db74">&#39;oct-30&#39;</span>)
-df<span style="color:#f92672">.</span>head(<span style="color:#ae81ff">3</span>)
 df<span style="color:#f92672">.</span>info()
 </code></pre></div><pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
 RangeIndex: 77 entries, 0 to 76
@@ -205,16 +204,9 @@ memory usage: 9.8+ KB
     df2 <span style="color:#f92672">=</span> df2<span style="color:#f92672">.</span>pipe(prep_rows, [<span style="color:#ae81ff">0</span>])\
         <span style="color:#f92672">.</span>pipe(prep_columns, drop_cols<span style="color:#f92672">=</span>drop_cols, map_cols<span style="color:#f92672">=</span>map_cols, date_label<span style="color:#f92672">=</span>date)
     df <span style="color:#f92672">=</span> df<span style="color:#f92672">.</span>append(df2, ignore_index<span style="color:#f92672">=</span>True)
-    <span style="color:#66d9ef">print</span>(len(df))
     
 df<span style="color:#f92672">.</span>info()
-</code></pre></div><pre><code>135
-187
-341
-393
-438
-514
-&lt;class 'pandas.core.frame.DataFrame'&gt;
+</code></pre></div><pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
 RangeIndex: 514 entries, 0 to 513
 Data columns (total 16 columns):
  #   Column             Non-Null Count  Dtype  
@@ -255,7 +247,7 @@ memory usage: 64.4+ KB
 2               36.0         0.20        0.01  2020-10-30 
 </code></pre>
 <h3 id="heading">🚩</h3>
-<p>Ok, I&rsquo;ve done a lot of data manipulation. I graph some things to see if there are any obvious patterns.</p>
+<p>Ok, I&rsquo;ve done a lot of data manipulation. Let&rsquo;s graph somethings to see if there are any hint of patterns.</p>
 <p>I&rsquo;ll go ahead and plot the strike prices vs the prices of bid calls and puts. Ignore trying to distinguish between ask and bid right now&hellip; I don&rsquo;t expect that they&rsquo;ll be too different than what bid call (or put) vs strike price look like.</p>
 <p>In general, <strong>call options</strong> reflect the <em>value</em> of being able to <em>buy</em> a stock <em>at a given strike price of the contract and at the present price of the stock</em>. Conversely, <strong>put options</strong> reflect the <em>value</em> of being able to <em>sell</em> a stock <em>at a given strike price of the contract and at the present price of the stock</em>.</p>
 <ul>
