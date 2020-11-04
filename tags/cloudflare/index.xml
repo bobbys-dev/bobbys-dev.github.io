@@ -13,7 +13,7 @@
       <pubDate>Tue, 03 Nov 2020 00:00:00 +0000</pubDate>
       
       <guid>https://bobbys-dev.github.io/post/serverless-dev-with-cloudflare-workers/</guid>
-      <description>I recently learned of a neat Cloudflare tool to that lets developers deploy &amp;ldquo;serverless code&amp;rdquo;: Cloudflare Workers. It approximates AWS Lambda in being a compute instance that lives in closer to the edge of the users&#39; site, and it&amp;rsquo;s fast at doing what it does. &amp;ldquo;Just deploy code&amp;rdquo; in your choice of language: Javascript, Rust, Python, C/C++&amp;hellip; and you needn&amp;rsquo;t preoccupy yourself about unused capacity, auto-scaling, or load balancing. A use case is localizing content to the language of the region where it&amp;rsquo;s being accessed (i.</description>
+      <description>&lt;p&gt;I recently learned of a neat Cloudflare tool to that lets developers deploy &amp;ldquo;serverless code&amp;rdquo;: &lt;a href=&#34;https://workers.cloudflare.com/&#34;&gt;Cloudflare Workers&lt;/a&gt;. It approximates AWS Lambda in being a compute instance that lives in closer to the edge of the users&#39; site, and it&amp;rsquo;s fast at doing what it does. &amp;ldquo;Just deploy code&amp;rdquo; in your choice of language: Javascript, Rust, Python, C/C++&amp;hellip; and you needn&amp;rsquo;t preoccupy yourself about unused capacity, auto-scaling, or load balancing.&lt;/p&gt;</description>
     </item>
     
   </channel>
