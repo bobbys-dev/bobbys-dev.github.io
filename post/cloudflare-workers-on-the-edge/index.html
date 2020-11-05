@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en-us"><meta charset="utf-8" />
+
+  <title>Workers on The Edge 👷‍♀️👷‍♂️ - bobbys-dev blog</title>
+
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="https://bobbys-dev.github.io/css/latex.css" />
+<link rel="stylesheet" href="https://bobbys-dev.github.io/css/main.css" />
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<meta name="generator" content="Hugo 0.75.1" /><body>
+
+
+
+
+
+
+<header>
+  <nav class="navbar">
+  <div class="nav">
+    
+
+    <ul class="nav-links">
+      
+    </ul>
+  </div>
+</nav>
+  <div class="intro-header">
+    <div class="container">
+      <div class="post-heading">
+        
+          <h1>Workers on The Edge 👷‍♀️👷‍♂️</h1>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+<div id="content">
+  <div class="container" role="main">
+    <article class="article" class="blog-post">
+      <div class="postmeta">
+        <span class="meta-post">
+  <i class="fa fa-calendar-alt"></i>Nov 5, 2020
+  
+</span>
+      </div>
+      <br>
+      
+    <p><a href="https://workers.cloudflare.com">Cloudflare Workers</a> are computing instances on the edges of the internet. They&rsquo;re purposely built to be lightweight, isolated, and distributed &ndash; these features are meant to achieve speed, security and economy. They&rsquo;re used to run user-defined applications, such as augmenting web requests but at an intermediate point between the origin server and the user.</p>
+<p>In this post I&rsquo;ll go over the What, How, and basic code structure to build up to a fleshed out use case in the future.</p>
+<h3 id="what-workers-does">What Workers does</h3>
+<p>Cloudflare Workers provides a serverless execution environment that allows you to create entirely new applications or augment existing ones without configuring or maintaining infrastructure.</p>
+<h3 id="how-workers-works">How Workers works</h3>
+<p><em>Cloudflare Workers</em> behave similar to JavaScript in the browser or in Node.js&hellip; but the differences happen at runtime. Rather than running on your local machine or on a centralized server, Workers functions run on <a href="https://www.cloudflare.com/network">Cloudflare&rsquo;s Edge Network</a> &ndash; a global network of thousands of machines distributed across hundreds of locations.</p>
+<p>Each of these machines hosts an instance of the Workers runtime, and each of those runtimes is capable of running thousands of user-defined apps.</p>
+<h4 id="now-into-detail">Now into detail&hellip;</h4>
+<p>The precondition is that you sign up for a Cloudflare account and setup your domain by either 1) using Cloudflare&rsquo;s workers.dev subdomain or 2) changing your domain to use Cloudflare&rsquo;s nameservers. Now, Cloudflare&rsquo;s edge newtork is setup to receive your domain&rsquo;s requests.</p>
+<p>When a request to your domain is received, the Workers script creates an event handler. The event handler can use any of the following to control <a href="https://developers.cloudflare.com/workers/learning/fetch-event-lifecycle">what happens next</a>. I focus on the responding function today.</p>
+<p>🛵 <code>respondWith()</code> intercepts the request and allows users to send a custom response.</p>
+<p>Most Workers scripts are a variation on the default Workers flow:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#75715e">/*
+</span><span style="color:#75715e">What a Workers flow looks like
+</span><span style="color:#75715e">*/</span>
+
+<span style="color:#a6e22e">addEventListener</span>(<span style="color:#e6db74">&#34;fetch&#34;</span>, <span style="color:#a6e22e">event</span> =&gt; {
+  <span style="color:#a6e22e">event</span>.<span style="color:#a6e22e">respondWith</span>(<span style="color:#a6e22e">handleRequest</span>(<span style="color:#a6e22e">event</span>.<span style="color:#a6e22e">request</span>))
+});
+
+<span style="color:#a6e22e">async</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">handleRequest</span>(<span style="color:#a6e22e">request</span>) {
+  <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Response</span>(<span style="color:#e6db74">&#34;Hello world&#34;</span>);
+}
+</code></pre></div><p>The <code>event</code> is a <a href="https://developers.cloudflare.com/workers/runtime-apis/fetch-event"><code>FetchEvent</code></a> object that generates a response on the spot, calling the <code>handleRequest()</code> function and passing the request onward so that the actual <code>Response</code> is created and returned. It is done this way so that there are single responsibilities.</p>
+<p>In the example below, I create a barebones API endpoint that returns a list of songs when a <code>GET /songs</code> request occurs. <a href="https://cloudflareworkers.com/#d841616c662116cab3213d43a8aecae5:http://about:blank/songs">Or check it out live in the Workers playground</a>. You can read the console log to follow the event handling.</p>
+<p>The first thing that occurs when the URL is requested is the triggering of the fetch event. The <code>event</code> responds by calling <code>handleRequest()</code>, which filters the request to return the proper responses. On line 10, I check that the request is a <code>GET</code>, and on line 17, I check that it is the <code>/songs</code> endpoint. For simplicity, I just check the last path and didn&rsquo;t validate the prefix path to home url in this example. The <code>getData()</code> function serves to form and return a json response.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#a6e22e">addEventListener</span>(<span style="color:#e6db74">&#34;fetch&#34;</span>, <span style="color:#a6e22e">event</span> =&gt; {
+    <span style="color:#a6e22e">event</span>.<span style="color:#a6e22e">respondWith</span>(<span style="color:#a6e22e">handleRequest</span>(<span style="color:#a6e22e">event</span>.<span style="color:#a6e22e">request</span>))
+});
+
+<span style="color:#a6e22e">async</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">handleRequest</span>(<span style="color:#a6e22e">request</span>) {
+    <span style="color:#75715e">/* Returns json data for valid endpoint
+</span><span style="color:#75715e">    Input: Fetch request object
+</span><span style="color:#75715e">    Output: Response object
+</span><span style="color:#75715e">    */</span>
+    <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">request</span>.<span style="color:#a6e22e">method</span> <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#34;GET&#34;</span>) {
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Response</span>(<span style="color:#e6db74">&#34;Expected GET&#34;</span>, { <span style="color:#a6e22e">status</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">500</span> })      
+    }
+    
+    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">urlParts</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">request</span>.<span style="color:#a6e22e">url</span>.<span style="color:#a6e22e">split</span>(<span style="color:#e6db74">&#39;/&#39;</span>)
+
+    <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">response</span>    
+    <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">urlParts</span>[<span style="color:#a6e22e">urlParts</span>.<span style="color:#a6e22e">length</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>] <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;songs&#39;</span>) {
+        <span style="color:#a6e22e">response</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">getData</span>()
+    } <span style="color:#66d9ef">else</span> {
+        <span style="color:#a6e22e">response</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Response</span>(<span style="color:#e6db74">&#34;Requested unknown endpoint&#34;</span>, { <span style="color:#a6e22e">status</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">400</span> })
+    }       
+    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">response</span>;
+}
+
+<span style="color:#66d9ef">function</span> <span style="color:#a6e22e">getData</span>() {
+    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">data</span> <span style="color:#f92672">=</span> [
+        { <span style="color:#e6db74">&#34;song&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Don&#39;t Go Jason Waterfalls &#34;</span>, <span style="color:#e6db74">&#34;year&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;1995&#34;</span> },
+        { <span style="color:#e6db74">&#34;song&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Happy Birthday remix&#34;</span>, <span style="color:#e6db74">&#34;year&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2000&#34;</span> },
+        { <span style="color:#e6db74">&#34;song&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Wikipedia theme song&#34;</span>, <span style="color:#e6db74">&#34;year&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2020&#34;</span> }
+    ]
+    
+    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">json</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">JSON</span>.<span style="color:#a6e22e">stringify</span>(<span style="color:#a6e22e">data</span>, <span style="color:#66d9ef">null</span>, <span style="color:#ae81ff">2</span>)
+    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Response</span>(<span style="color:#a6e22e">json</span>, {
+        <span style="color:#a6e22e">headers</span><span style="color:#f92672">:</span> {
+            <span style="color:#e6db74">&#34;content-type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;application/json;charset=UTF-8&#34;</span>,
+        }
+    });    
+}
+</code></pre></div><p>If I were to deploy this endpoint, my application would reside among other applications on the edge network, but its context and memory is isolated. A single runtime can run hundreds or thousands of &ldquo;isolates&rdquo;, seamlessly switching between them. Each piece of code is protected from other untrusted or user-written code on the runtime.</p>
+<h3 id="but-wait-theres-more">But wait there&rsquo;s more&hellip;</h3>
+<p>The Workers API has a few other <a href="https://developers.cloudflare.com/workers/examples">examples</a> showing the range of functionalities. The next post in this series will go through another example.
+🐱‍👓</p>
+
+
+      
+        <div class="blog-tags">
+          
+            <a href="https://bobbys-dev.github.io//tags/full-stack-development/">full stack development</a>&nbsp;
+          
+            <a href="https://bobbys-dev.github.io//tags/serverless/">serverless</a>&nbsp;
+          
+            <a href="https://bobbys-dev.github.io//tags/cloudflare/">Cloudflare</a>&nbsp;
+          
+            <a href="https://bobbys-dev.github.io//tags/cloudflare-workers/">Cloudflare Workers</a>&nbsp;
+          
+        </div>
+      
+    </article>
+    
+  </div>
+
+        </div><footer>
+  <div class="container">
+    <p class="credits copyright">
+      <p class="credits theme-by">
+         <a href="https://bobbys-dev.github.io/">blog home</a>&nbsp;|&nbsp;<a href="https://github.com/bobbys-dev">github</a>&nbsp;|&nbsp;<a href="https://bobbys-dev.github.io/about">bobbys</a>
+        &copy;
+        2020
+        <br>
+        Powered By <a href="https://gohugo.io">Hugo</a>&nbsp;/&nbsp;Theme&nbsp;<a href="https://github.com/7ma7X/HugoTeX">HugoTeX</a>
+      </p>
+  </div>
+</footer></body>
+</html>

@@ -6,7 +6,17 @@
     <description>Recent content in Cloudflare Workers on bobbys-dev blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 03 Nov 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://bobbys-dev.github.io/tags/cloudflare-workers/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 05 Nov 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://bobbys-dev.github.io/tags/cloudflare-workers/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Workers on The Edge 👷‍♀️👷‍♂️</title>
+      <link>https://bobbys-dev.github.io/post/cloudflare-workers-on-the-edge/</link>
+      <pubDate>Thu, 05 Nov 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://bobbys-dev.github.io/post/cloudflare-workers-on-the-edge/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;https://workers.cloudflare.com&#34;&gt;Cloudflare Workers&lt;/a&gt; are computing instances on the edges of the internet. They&amp;rsquo;re purposely built to be lightweight, isolated, and distributed &amp;ndash; these features are meant to achieve speed, security and economy. They&amp;rsquo;re used to run user-defined applications, such as augmenting web requests but at an intermediate point between the origin server and the user.&lt;/p&gt;
+&lt;p&gt;In this post I&amp;rsquo;ll go over the What, How, and basic code structure to build up to a fleshed out use case in the future.&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>Serverless dev with Cloudflare Workers</title>
       <link>https://bobbys-dev.github.io/post/serverless-dev-with-cloudflare-workers/</link>
