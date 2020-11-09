@@ -66,17 +66,17 @@
 
 <span style="color:#a6e22e">addEventListener</span>(<span style="color:#e6db74">&#34;fetch&#34;</span>, <span style="color:#a6e22e">event</span> =&gt; {
   <span style="color:#a6e22e">event</span>.<span style="color:#a6e22e">respondWith</span>(<span style="color:#a6e22e">handleRequest</span>(<span style="color:#a6e22e">event</span>.<span style="color:#a6e22e">request</span>))
-});
+})
 
 <span style="color:#a6e22e">async</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">handleRequest</span>(<span style="color:#a6e22e">request</span>) {
-  <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Response</span>(<span style="color:#e6db74">&#34;Hello world&#34;</span>);
+  <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Response</span>(<span style="color:#e6db74">&#34;Hello world&#34;</span>)
 }
 </code></pre></div><p>The <code>event</code> is a <a href="https://developers.cloudflare.com/workers/runtime-apis/fetch-event"><code>FetchEvent</code></a> object that generates a response on the spot, calling the <code>handleRequest()</code> function and passing the request onward so that the actual <code>Response</code> is created and returned. It is done this way so that there are single responsibilities.</p>
 <p>In the example below, I create a barebones API endpoint that returns a list of songs when a <code>GET /songs</code> request occurs. <a href="https://cloudflareworkers.com/#d841616c662116cab3213d43a8aecae5:http://about:blank/songs">Or check it out live in the Workers playground</a>. You can read the console log to follow the event handling.</p>
 <p>The first thing that occurs when the URL is requested is the triggering of the fetch event. The <code>event</code> responds by calling <code>handleRequest()</code>, which filters the request to return the proper responses. On line 10, I check that the request is a <code>GET</code>, and on line 17, I check that it is the <code>/songs</code> endpoint. For simplicity, I just check the last path and didn&rsquo;t validate the prefix path to home url in this example. The <code>getData()</code> function serves to form and return a json response.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#a6e22e">addEventListener</span>(<span style="color:#e6db74">&#34;fetch&#34;</span>, <span style="color:#a6e22e">event</span> =&gt; {
     <span style="color:#a6e22e">event</span>.<span style="color:#a6e22e">respondWith</span>(<span style="color:#a6e22e">handleRequest</span>(<span style="color:#a6e22e">event</span>.<span style="color:#a6e22e">request</span>))
-});
+})
 
 <span style="color:#a6e22e">async</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">handleRequest</span>(<span style="color:#a6e22e">request</span>) {
     <span style="color:#75715e">/* Returns json data for valid endpoint
@@ -95,7 +95,7 @@
     } <span style="color:#66d9ef">else</span> {
         <span style="color:#a6e22e">response</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Response</span>(<span style="color:#e6db74">&#34;Requested unknown endpoint&#34;</span>, { <span style="color:#a6e22e">status</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">400</span> })
     }       
-    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">response</span>;
+    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">response</span>
 }
 
 <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">getData</span>() {
@@ -110,7 +110,7 @@
         <span style="color:#a6e22e">headers</span><span style="color:#f92672">:</span> {
             <span style="color:#e6db74">&#34;content-type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;application/json;charset=UTF-8&#34;</span>,
         }
-    });    
+    })  
 }
 </code></pre></div><p>If I were to deploy this endpoint, my application would reside among other applications on the edge network, but its context and memory are isolated. A single runtime can run hundreds or thousands of &ldquo;isolates&rdquo;, seamlessly switching between them. Each piece of code is protected from other untrusted or user-written code on the runtime.</p>
 <h3 id="but-wait-theres-more">But wait there&rsquo;s more&hellip;</h3>
