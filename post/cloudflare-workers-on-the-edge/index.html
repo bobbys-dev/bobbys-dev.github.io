@@ -60,59 +60,59 @@
 <p>When a request to your domain is received, the Workers script creates an event handler. The event handler can use any of the following to control <a href="https://developers.cloudflare.com/workers/learning/fetch-event-lifecycle">what happens next</a>. I focus on the responding function today.</p>
 <p>🛵 <code>respondWith()</code> intercepts the request and allows users to send a custom response.</p>
 <p>Most Workers scripts are a variation on the default Workers flow:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#75715e">/*
-</span><span style="color:#75715e">What a Workers flow looks like
-</span><span style="color:#75715e">*/</span>
+<pre><code>/*
+What a Workers flow looks like
+*/
 
-<span style="color:#a6e22e">addEventListener</span>(<span style="color:#e6db74">&#34;fetch&#34;</span>, <span style="color:#a6e22e">event</span> =&gt; {
-  <span style="color:#a6e22e">event</span>.<span style="color:#a6e22e">respondWith</span>(<span style="color:#a6e22e">handleRequest</span>(<span style="color:#a6e22e">event</span>.<span style="color:#a6e22e">request</span>))
+addEventListener(&quot;fetch&quot;, event =&gt; {
+  event.respondWith(handleRequest(event.request))
 })
 
-<span style="color:#a6e22e">async</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">handleRequest</span>(<span style="color:#a6e22e">request</span>) {
-  <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Response</span>(<span style="color:#e6db74">&#34;Hello world&#34;</span>)
+async function handleRequest(request) {
+  return new Response(&quot;Hello world&quot;)
 }
-</code></pre></div><p>The <code>event</code> is a <a href="https://developers.cloudflare.com/workers/runtime-apis/fetch-event"><code>FetchEvent</code></a> object that generates a response on the spot, calling the <code>handleRequest()</code> function and passing the request onward so that the actual <code>Response</code> is created and returned. It is done this way so that there are single responsibilities.</p>
+</code></pre><p>The <code>event</code> is a <a href="https://developers.cloudflare.com/workers/runtime-apis/fetch-event"><code>FetchEvent</code></a> object that generates a response on the spot, calling the <code>handleRequest()</code> function and passing the request onward so that the actual <code>Response</code> is created and returned. It is done this way so that there are single responsibilities.</p>
 <p>In the example below, I create a barebones API endpoint that returns a list of songs when a <code>GET /songs</code> request occurs. <a href="https://cloudflareworkers.com/#d841616c662116cab3213d43a8aecae5:http://about:blank/songs">Or check it out live in the Workers playground</a>. You can read the console log to follow the event handling.</p>
 <p>The first thing that occurs when the URL is requested is the triggering of the fetch event. The <code>event</code> responds by calling <code>handleRequest()</code>, which filters the request to return the proper responses. On line 10, I check that the request is a <code>GET</code>, and on line 17, I check that it is the <code>/songs</code> endpoint. For simplicity, I just check the last path and didn&rsquo;t validate the prefix path to home url in this example. The <code>getData()</code> function serves to form and return a json response.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#a6e22e">addEventListener</span>(<span style="color:#e6db74">&#34;fetch&#34;</span>, <span style="color:#a6e22e">event</span> =&gt; {
-    <span style="color:#a6e22e">event</span>.<span style="color:#a6e22e">respondWith</span>(<span style="color:#a6e22e">handleRequest</span>(<span style="color:#a6e22e">event</span>.<span style="color:#a6e22e">request</span>))
+<pre><code>addEventListener(&quot;fetch&quot;, event =&gt; {
+    event.respondWith(handleRequest(event.request))
 })
 
-<span style="color:#a6e22e">async</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">handleRequest</span>(<span style="color:#a6e22e">request</span>) {
-    <span style="color:#75715e">/* Returns json data for valid endpoint
-</span><span style="color:#75715e">    Input: Fetch request object
-</span><span style="color:#75715e">    Output: Response object
-</span><span style="color:#75715e">    */</span>
-    <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">request</span>.<span style="color:#a6e22e">method</span> <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#34;GET&#34;</span>) {
-        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Response</span>(<span style="color:#e6db74">&#34;Expected GET&#34;</span>, { <span style="color:#a6e22e">status</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">500</span> })      
+async function handleRequest(request) {
+    /* Returns json data for valid endpoint
+    Input: Fetch request object
+    Output: Response object
+    */
+    if (request.method != &quot;GET&quot;) {
+        return new Response(&quot;Expected GET&quot;, { status: 500 })      
     }
     
-    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">urlParts</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">request</span>.<span style="color:#a6e22e">url</span>.<span style="color:#a6e22e">split</span>(<span style="color:#e6db74">&#39;/&#39;</span>)
+    const urlParts = request.url.split('/')
 
-    <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">response</span>    
-    <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">urlParts</span>[<span style="color:#a6e22e">urlParts</span>.<span style="color:#a6e22e">length</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>] <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;songs&#39;</span>) {
-        <span style="color:#a6e22e">response</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">getData</span>()
-    } <span style="color:#66d9ef">else</span> {
-        <span style="color:#a6e22e">response</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Response</span>(<span style="color:#e6db74">&#34;Requested unknown endpoint&#34;</span>, { <span style="color:#a6e22e">status</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">400</span> })
+    let response    
+    if (urlParts[urlParts.length-1] == 'songs') {
+        response = getData()
+    } else {
+        response = new Response(&quot;Requested unknown endpoint&quot;, { status: 400 })
     }       
-    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">response</span>
+    return response
 }
 
-<span style="color:#66d9ef">function</span> <span style="color:#a6e22e">getData</span>() {
-    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">data</span> <span style="color:#f92672">=</span> [
-        { <span style="color:#e6db74">&#34;song&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Don&#39;t Go Jason Waterfalls &#34;</span>, <span style="color:#e6db74">&#34;year&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;1995&#34;</span> },
-        { <span style="color:#e6db74">&#34;song&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Happy Birthday remix&#34;</span>, <span style="color:#e6db74">&#34;year&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2000&#34;</span> },
-        { <span style="color:#e6db74">&#34;song&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Wikipedia theme song&#34;</span>, <span style="color:#e6db74">&#34;year&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2020&#34;</span> }
+function getData() {
+    const data = [
+        { &quot;song&quot;: &quot;Don't Go Jason Waterfalls &quot;, &quot;year&quot;: &quot;1995&quot; },
+        { &quot;song&quot;: &quot;Happy Birthday remix&quot;, &quot;year&quot;: &quot;2000&quot; },
+        { &quot;song&quot;: &quot;Wikipedia theme song&quot;, &quot;year&quot;: &quot;2020&quot; }
     ]
     
-    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">json</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">JSON</span>.<span style="color:#a6e22e">stringify</span>(<span style="color:#a6e22e">data</span>, <span style="color:#66d9ef">null</span>, <span style="color:#ae81ff">2</span>)
-    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Response</span>(<span style="color:#a6e22e">json</span>, {
-        <span style="color:#a6e22e">headers</span><span style="color:#f92672">:</span> {
-            <span style="color:#e6db74">&#34;content-type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;application/json;charset=UTF-8&#34;</span>,
+    const json = JSON.stringify(data, null, 2)
+    return new Response(json, {
+        headers: {
+            &quot;content-type&quot;: &quot;application/json;charset=UTF-8&quot;,
         }
     })  
 }
-</code></pre></div><p>If I were to deploy this endpoint, my application would reside among other applications on the edge network, but its context and memory are isolated. A single runtime can run hundreds or thousands of &ldquo;isolates&rdquo;, seamlessly switching between them. Each piece of code is protected from other untrusted or user-written code on the runtime.</p>
+</code></pre><p>If I were to deploy this endpoint, my application would reside among other applications on the edge network, but its context and memory are isolated. A single runtime can run hundreds or thousands of &ldquo;isolates&rdquo;, seamlessly switching between them. Each piece of code is protected from other untrusted or user-written code on the runtime.</p>
 <h3 id="but-wait-theres-more">But wait there&rsquo;s more&hellip;</h3>
 <p>The Workers API has a few other <a href="https://developers.cloudflare.com/workers/examples">examples</a> showing the range of functionalities. The next post in this series will go through another example.
 🐱‍👓</p>
