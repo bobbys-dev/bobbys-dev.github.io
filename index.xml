@@ -7,6 +7,51 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language><atom:link href="https://bobbys-dev.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>containers</title>
+      <link>https://bobbys-dev.github.io/tags/containers/</link>
+      <pubDate>Mon, 09 Nov 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://bobbys-dev.github.io/tags/containers/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Docker</title>
+      <link>https://bobbys-dev.github.io/tags/docker/</link>
+      <pubDate>Mon, 09 Nov 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://bobbys-dev.github.io/tags/docker/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Series</title>
+      <link>https://bobbys-dev.github.io/series/</link>
+      <pubDate>Mon, 09 Nov 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://bobbys-dev.github.io/series/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>software development</title>
+      <link>https://bobbys-dev.github.io/series/software-development/</link>
+      <pubDate>Mon, 09 Nov 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://bobbys-dev.github.io/series/software-development/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Tags</title>
+      <link>https://bobbys-dev.github.io/tags/</link>
+      <pubDate>Mon, 09 Nov 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://bobbys-dev.github.io/tags/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Cloudflare</title>
       <link>https://bobbys-dev.github.io/tags/cloudflare/</link>
       <pubDate>Thu, 05 Nov 2020 00:00:00 +0000</pubDate>
@@ -34,29 +79,11 @@
     </item>
     
     <item>
-      <title>Series</title>
-      <link>https://bobbys-dev.github.io/series/</link>
-      <pubDate>Thu, 05 Nov 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://bobbys-dev.github.io/series/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>serverless</title>
       <link>https://bobbys-dev.github.io/tags/serverless/</link>
       <pubDate>Thu, 05 Nov 2020 00:00:00 +0000</pubDate>
       
       <guid>https://bobbys-dev.github.io/tags/serverless/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Tags</title>
-      <link>https://bobbys-dev.github.io/tags/</link>
-      <pubDate>Thu, 05 Nov 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://bobbys-dev.github.io/tags/</guid>
       <description></description>
     </item>
     

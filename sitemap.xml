@@ -4,7 +4,42 @@
   
   <url>
     <loc>https://bobbys-dev.github.io/</loc>
-    <lastmod>2020-11-05T00:00:00+00:00</lastmod>
+    <lastmod>2020-11-09T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://bobbys-dev.github.io/tags/containers/</loc>
+    <lastmod>2020-11-09T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://bobbys-dev.github.io/post/containers-for-software-development/</loc>
+    <lastmod>2020-11-09T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://bobbys-dev.github.io/tags/docker/</loc>
+    <lastmod>2020-11-09T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://bobbys-dev.github.io/post/</loc>
+    <lastmod>2020-11-09T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://bobbys-dev.github.io/series/</loc>
+    <lastmod>2020-11-09T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://bobbys-dev.github.io/series/software-development/</loc>
+    <lastmod>2020-11-09T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://bobbys-dev.github.io/tags/</loc>
+    <lastmod>2020-11-09T00:00:00+00:00</lastmod>
   </url>
   
   <url>
@@ -23,22 +58,7 @@
   </url>
   
   <url>
-    <loc>https://bobbys-dev.github.io/post/</loc>
-    <lastmod>2020-11-05T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://bobbys-dev.github.io/series/</loc>
-    <lastmod>2020-11-05T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://bobbys-dev.github.io/tags/serverless/</loc>
-    <lastmod>2020-11-05T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://bobbys-dev.github.io/tags/</loc>
     <lastmod>2020-11-05T00:00:00+00:00</lastmod>
   </url>
   

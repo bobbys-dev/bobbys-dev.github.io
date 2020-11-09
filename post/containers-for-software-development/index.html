@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en-us"><meta charset="utf-8" />
+
+  <title>Containers for Software Development - bobbys-dev blog</title>
+
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="https://bobbys-dev.github.io/css/latex.css" />
+<link rel="stylesheet" href="https://bobbys-dev.github.io/css/main.css" />
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<meta name="generator" content="Hugo 0.75.1" /><body>
+
+
+
+
+
+
+<header>
+  <nav class="navbar">
+  <div class="nav">
+    
+
+    <ul class="nav-links">
+      
+    </ul>
+  </div>
+</nav>
+  <div class="intro-header">
+    <div class="container">
+      <div class="post-heading">
+        
+          <h1>Containers for Software Development</h1>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+<div id="content">
+  <div class="container" role="main">
+    <article class="article" class="blog-post">
+      <div class="postmeta">
+        <span class="meta-post">
+  <i class="fa fa-calendar-alt"></i>Nov 9, 2020
+  
+</span>
+      </div>
+      <br>
+      
+    <p>As a software developer, you can use software containers to run stuff in a consistent manner across various operating systems. They are an operating system paradigm in which the kernel allows the existence of multiple, isolated user space instances. To create isolated process environments within a system, containers make use of bundle of techniques with main ones including:</p>
+<ul>
+<li>Unix’s <a href="https://en.wikipedia.org/wiki/Linux_namespaces">namespace</a>: process space and id&rsquo;s</li>
+<li><a href="https://en.wikipedia.org/wiki/Chroot">chroot</a>: filesystem visibility</li>
+<li><a href="https://en.wikipedia.org/wiki/Cgroups">cgroups</a>: allocated resources (networking, number of processes, memory…)</li>
+</ul>
+<p>Ideally, containers can run (side-by-side) on any machine&ndash;all dependencies already included. Containerization attempts to tackle the &ldquo;well, it worked on <em>my</em> machine&rdquo; issue,  where software runs seemingly fine on your machine but doesn&rsquo;t run on another system.</p>
+<p>There are platforms that help you create and run containers, but for the highly initiated, you can build a container from scratch with syscall and everything:
+<a href="http://www.youtube.com/watch?v=8fi7uSYlOdc" title="Containers from scratch"><img src="http://img.youtube.com/vi/8fi7uSYlOdc/0.jpg" alt="Video link to Liz Rice&rsquo;s talk about building software containers from scratch"></a></p>
+<p><a href="https://www.docker.com/">Docker</a> is branded platform of containerization software that packages and runs containers. Docker allows you to build containers from templates with all the configurations and environment variables you&rsquo;d need. You bake in those configurations and share the images so others can run it in the same, consistent environment.</p>
+<h3 id="why-containers-generally">Why containers, generally</h3>
+<p>Using containers set you up for application portability and reproducibility. Furthermore, you can use container orchestration software to add scalability for <em>continuous integration/continuous development</em>. Container orchestrators (such with <a href="https://kubernetes.io/">Kubernetes</a>) are another software abstraction level to automatically scale resources, monitor, and regulate clusters of containers.</p>
+<pre><code>Issue: “It worked on my machine.” -&gt; 😣
+Realize you need application runtime environment standardization -&gt; 🙂
+Containers help your application's portability + reproducibility -&gt; 😁
+Use container orchestration and regulate containers -&gt; 🤩
+</code></pre>
+<h3 id="hello-world-dockerfile">‘Hello World’ Dockerfile</h3>
+<p>A Docker image is a read-only template used to build containers. Images are used to store and ship applications. Docker images are usually specified with directives in a file called the Dockerfile. A directive is a command to the Docker API:</p>
+<p><strong>FROM</strong>
+The following file contents tells Docker to build an image starting with the <a href="https://en.wikipedia.org/wiki/Alpine_Linux">Alpine Linux</a> distribution that also has python 3.7 (# are comments). Alpine is selected because it&rsquo;s a minimal size. The image is hosted and downloaded from Docker Hub, a repository of container images that the development community can use to base off their specific use case/ build off of. Another repository is <a href="https://cloud.google.com/container-registry/">Google&rsquo;s Container Registry</a> for business, and there are numerous others.</p>
+<p><strong>WORKDIR</strong>
+The <em>working directory</em>, called <code>app</code>, is a directory created <strong>in</strong> the container. The relevant rest of the commands will assume terminal commands in <code>app</code>.</p>
+<p><strong>COPY</strong>
+<code>COPY . /app</code> tells Docker to copy everything here (ie <code>.</code>) into the container&rsquo;s <code>app</code> directory. In this example there is a hello-world.py file being copied.</p>
+<p><strong>CMD</strong>
+The line with the Docker directive <code>CMD</code> will execute the command <code>python helloworld.py</code> when the container runs (also, it executes as if it were a terminal navigated to its <code>app</code> directory). <code>CMD</code> is the command the container executes <em>by default</em> when launching the built image.</p>
+<p><strong>Lastly, build and run</strong>
+So, with my host machine&rsquo;s terminal navigated to the location of the Dockerfile and python script, I build the container image with the command <code>docker build --tag hello-world .</code>. The tag option assigns a custom name so I can easily identify the image when it runs. The build directives assume off of the current directory (ie <code>.</code>). Docker downloads the Linux distribution and will run the script in an isolated environment on my local machine.</p>
+<pre><code># base image
+FROM python:3.7-alpine3.9
+
+# Set working dir to /app and copy over everything in current dir
+WORKDIR /app
+COPY . /app
+
+# Run py script on container launch
+CMD [&quot;python&quot;, &quot;helloworld.py&quot;]
+</code></pre><h3 id="jupyter-notebook-in-a-container">Jupyter notebook in a container</h3>
+<p>There are similar motivations to use containers in data science. When a business has a question to answer with data, a data scientist comes up with a methodology to produce findings, communicate results, and explain their decision. They need reproducible results for auditable work. Containers help package code, data, and all dependencies to reproduce that analysis.</p>
+<p>In the Dockerfile contents below: Create a Docker image with Jupyter notebook, python libraries, and data so that others can audit work</p>
+<p><strong>VOLUME</strong>
+The <code>VOLUME</code> instruction creates a mount point with the specified name and marks it as holding externally mounted volumes from native host or other containers. I&rsquo;ll use the -v option to mount my host folder to that container volume.</p>
+<p><strong>RUN</strong>
+<code>RUN</code> is an image build step; the state of the container after a RUN command will be committed to the built image. In this example, I install jupyter and some other data science libraries.</p>
+<p><strong>EXPOSE</strong>
+This instruction tells Docker that the container listens on its 8888 port at runtime. I&rsquo;ll use the -p option to set host-side port 9999 to forward to container-side 8888.</p>
+<p><strong>Build and run command</strong>
+On my host machine, I&rsquo;ll do:</p>
+<p><code>docker build –t hello-jupyter .</code></p>
+<p>to build the image specified by the Dockefile, then:</p>
+<p><code>docker run -p 9999:8888 -v &quot;%cd%\\shared_data&quot;:/app/shared_data hello-jupyter</code></p>
+<p>to run the container (tagged &ldquo;hello-juptyer&rdquo;) and set host-side port 9999 to forward to container-side 8888. Files in <code>\shared_data</code> will by mount by the container and assigned to <code>/app/shared_data</code>. Once it&rsquo;s running, I can use the web browser to go to localhost:9999 to access Juptyer Notebooks.</p>
+<pre><code>FROM python:3.6.5-slim
+WORKDIR /app
+COPY . /app
+
+# define container-side path to share
+VOLUME /app/shared_data
+
+# Install dependencies
+RUN pip --no-cache-dir install jupyter numpy pandas seaborn
+
+# Make container-side port 8888 available
+EXPOSE 8888
+
+# Run jupyter when container starts
+CMD [&quot;jupyter&quot;, &quot;notebook&quot;, &quot;--ip='*'&quot;, &quot;--port=8888&quot;, &quot;--no-browser&quot;, &quot;--allow-root&quot;]
+</code></pre><h3 id="best-practices">Best practices</h3>
+<p>Use a base image with minimum resources and build it with up your particular dependencies.</p>
+<p>Be explicit about establishing resources in Dockerfile</p>
+<ul>
+<li>Python and package versions e.g.: <code>pip install numpy==1.0</code></li>
+</ul>
+<p>Define default behavior, for example ENTRYPOINT and CMD seemingly do the same thing, but you&rsquo;d do the following to communicate that some python code is supposed to run:</p>
+<pre><code>    ENTRYPOINT [&quot;python&quot;]
+    CMD [&quot;./main.py&quot;]
+</code></pre><p>You cannot override the ENTRYPOINT instruction by adding command-line parameters to the docker run command, whereas the target file (eg main.py) can be overridden.</p>
+<p>🛳</p>
+
+
+      
+        <div class="blog-tags">
+          
+            <a href="https://bobbys-dev.github.io//tags/containers/">containers</a>&nbsp;
+          
+            <a href="https://bobbys-dev.github.io//tags/docker/">Docker</a>&nbsp;
+          
+        </div>
+      
+    </article>
+    
+  </div>
+
+        </div><footer>
+  <div class="container">
+    <p class="credits copyright">
+      <p class="credits theme-by">
+         <a href="https://bobbys-dev.github.io/">blog home</a>&nbsp;|&nbsp;<a href="https://github.com/bobbys-dev">github</a>&nbsp;|&nbsp;<a href="https://bobbys-dev.github.io/about">bobbys</a>
+        &copy;
+        2020
+        <br>
+        Powered By <a href="https://gohugo.io">Hugo</a>&nbsp;/&nbsp;Theme&nbsp;<a href="https://github.com/7ma7X/HugoTeX">HugoTeX</a>
+      </p>
+  </div>
+</footer></body>
+</html>
