@@ -52,51 +52,6 @@
     </item>
     
     <item>
-      <title>Cloudflare</title>
-      <link>https://bobbys-dev.github.io/tags/cloudflare/</link>
-      <pubDate>Thu, 05 Nov 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://bobbys-dev.github.io/tags/cloudflare/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Cloudflare Workers</title>
-      <link>https://bobbys-dev.github.io/tags/cloudflare-workers/</link>
-      <pubDate>Thu, 05 Nov 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://bobbys-dev.github.io/tags/cloudflare-workers/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>full stack development</title>
-      <link>https://bobbys-dev.github.io/tags/full-stack-development/</link>
-      <pubDate>Thu, 05 Nov 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://bobbys-dev.github.io/tags/full-stack-development/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>serverless</title>
-      <link>https://bobbys-dev.github.io/tags/serverless/</link>
-      <pubDate>Thu, 05 Nov 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://bobbys-dev.github.io/tags/serverless/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>web development</title>
-      <link>https://bobbys-dev.github.io/series/web-development/</link>
-      <pubDate>Thu, 05 Nov 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://bobbys-dev.github.io/series/web-development/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>data analysis on stock market data</title>
       <link>https://bobbys-dev.github.io/series/data-analysis-on-stock-market-data/</link>
       <pubDate>Wed, 04 Nov 2020 00:00:00 +0000</pubDate>
@@ -138,6 +93,51 @@
       <pubDate>Wed, 04 Nov 2020 00:00:00 +0000</pubDate>
       
       <guid>https://bobbys-dev.github.io/tags/visualization/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Cloudflare</title>
+      <link>https://bobbys-dev.github.io/tags/cloudflare/</link>
+      <pubDate>Tue, 03 Nov 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://bobbys-dev.github.io/tags/cloudflare/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Cloudflare Workers</title>
+      <link>https://bobbys-dev.github.io/tags/cloudflare-workers/</link>
+      <pubDate>Tue, 03 Nov 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://bobbys-dev.github.io/tags/cloudflare-workers/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>full stack development</title>
+      <link>https://bobbys-dev.github.io/tags/full-stack-development/</link>
+      <pubDate>Tue, 03 Nov 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://bobbys-dev.github.io/tags/full-stack-development/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>serverless</title>
+      <link>https://bobbys-dev.github.io/tags/serverless/</link>
+      <pubDate>Tue, 03 Nov 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://bobbys-dev.github.io/tags/serverless/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>web development</title>
+      <link>https://bobbys-dev.github.io/series/web-development/</link>
+      <pubDate>Tue, 03 Nov 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://bobbys-dev.github.io/series/web-development/</guid>
       <description></description>
     </item>
     
